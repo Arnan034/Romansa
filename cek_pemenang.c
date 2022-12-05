@@ -13,7 +13,11 @@ int main(){
 }
 
 void cek_menang(){
+<<<<<<< HEAD
 // ini prosedur cek pemenang
+=======
+
+>>>>>>> cek_pemenang
 }
 
 void cek_menang_3x3(){
