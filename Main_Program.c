@@ -8,6 +8,12 @@ typedef struct(){
     char papan[7][7];
 }Papan;
 
+typedef struct(){
+    int jam;
+    int menit;
+    int detik;
+}Time;
+
 void cetak_menu_awal();
 
 void pilih_pemain();
