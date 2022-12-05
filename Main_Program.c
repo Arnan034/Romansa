@@ -1,3 +1,5 @@
+#include<stdio.h>
+
 typedef struct(){
     char nama[10];
     char simbol;
@@ -112,5 +114,5 @@ void simpan_skor(){
 }
 
 void hitung_skor(){
-    
+
 }
