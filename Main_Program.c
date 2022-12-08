@@ -7,7 +7,8 @@ typedef struct(){
 }Pemain;
 
 typedef struct(){
-    char papan[7][7];
+    char kotak[7][7];
+    int ukuran;
 }Papan;
 
 typedef struct(){
@@ -41,6 +42,8 @@ int cek_tempat_kosong();
 void cetak_tampilan_menang();
 
 int ulangi_permainan();
+
+void hapus_papan(Papan *papan);
 
 void timer();
 
@@ -274,6 +277,16 @@ void cetak_tampilan_menang(){
 
 int ulangi_permainan(){
 
+}
+
+void hapus_papan(Papan *papan){
+	int i, j;
+	
+	for (i=0; i<papan.ukuran; i++){
+		for(j=0; i<papan.ukuran){
+			papan.kotak[i][j] = ' ';
+		}
+	}
 }
 
 void timer(){
