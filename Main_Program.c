@@ -1,4 +1,5 @@
-#include<stdio.h>
+#include <stdio.h>
+#include <stdbool.h>
 
 typedef struct(){
     char nama[10];
@@ -37,9 +38,9 @@ char cek_menang_5x5();
 
 char cek_menang_7x7();
 
-int cek_tempat_kosong();
+bool cek_tempat_kosong(Papan papan);
 
-void cetak_tampilan_menang();
+void cetak_hasil_permainan();
 
 int ulangi_permainan();
 
@@ -51,9 +52,16 @@ void simpan_skor();
 
 void hitung_skor();
 
+
 int main(){
 
-
+	cetak_menu_awal();
+	pilih_pemain(Pemain *pemain1, Pemain *pemain2);
+	pilih_dimensi_papan(Papan *papan);
+	mulai_permainan();
+	cetak_hasil_permainan();
+	ulangi_permainan();
+	simpan_skor();
 }
 
 void cetak_menu_awal(){
@@ -267,11 +275,15 @@ char cek_menang_7x7(){
     
     return ' ';
 }
-int cek_tempat_kosong(){
-
+bool cek_tempat_kosong(Papan papan, int baris, int kolom){
+	if(papan.kotak[baris][kolom] == ' '){
+		return true;
+	}else{
+		return false;
+	}
 }
 
-void cetak_tampilan_menang(){
+void cetak_hasil_permainan(){
 
 }
 
