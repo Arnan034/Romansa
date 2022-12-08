@@ -74,7 +74,24 @@ void cetak_papan(){
 }
 
 void giliran_pemain(){
-
+    int x;
+	int y;
+	
+	do{	
+		printf("Enter row #(1-3): ");
+		scanf("%d", &x);
+		x--;
+		printf("Enter column #(1-3): ");
+		scanf("%d", &y);
+		y--;
+		
+		if(board[x][y] != ' '){
+			printf("Invalid Move!\n");
+		} else {
+			board[x][y] = /*player*/;
+			break;
+		}
+	}while(board [x][y] != ' ');
 }
 
 char cek_menang(char flag){
