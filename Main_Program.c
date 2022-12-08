@@ -4,7 +4,7 @@
 typedef struct(){
     char nama[10];
     char simbol;
-    int score;
+    int skor;
 }Pemain;
 
 typedef struct(){
@@ -48,9 +48,9 @@ void hapus_papan(Papan *papan);
 
 void timer();
 
-void simpan_skor();
+void simpan_skor(Pemain pemain);
 
-void hitung_skor();
+void urutkan_skor(Pemain pemain);
 
 
 int main(){
@@ -305,10 +305,10 @@ void timer(){
 
 }
 
-void simpan_skor(){
+void simpan_skor(Pemain pemain){
 
 }
 
-void hitung_skor(){
+void urutkan_skor(Pemain pemain){
 
 }
