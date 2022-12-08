@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<windows.h>
 
 typedef struct(){
     char nama[10];
