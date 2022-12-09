@@ -1,9 +1,9 @@
-<<<<<<< HEAD
 #include<stdio.h>
 #include<windows.h>
 #include <stdio.h>
 #include <stdbool.h>
->>>>>>> 6d63f32295d1e7c9e37e3ce9c740d5622f770c03
+
+//test
 
 typedef struct(){
     char nama[10];
