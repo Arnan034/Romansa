@@ -133,7 +133,7 @@ void tampilan_papan(){
 void tampilan_player_biner(){
 	gotoxy(17,6); printf("\033[1;31m");printf("010101");
 	gotoxy(16,7); printf("11010111");
-	gotoxy(16,8); printf("00010100");
+	gotoxy(16,8); printf("00010100");	
 	gotoxy(16,9); printf("11001011");
 	gotoxy(17,10); printf("110110");
 	gotoxy(14,11); printf("010100101010");
