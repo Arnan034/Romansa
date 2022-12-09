@@ -23,33 +23,33 @@ void pilih_pemain();
 
 void pilih_dimensi_papan();
 
-void mulai_permainan();
-
 void cetak_papan();
 void tampilan_player_biner();
 void tampilan_row_colums();
 void tampilan_nama_player();
 void tampilan_papan();
 void tampilan_score();
+void mulai_permainan();
 void giliran_pemain();
 void bot_mudah();
 
+void giliran_pemain();
 char cek_menang(char flag);
 char cek_menang_3x3(Papan papan);
 char cek_menang_5x5(Papan papan);
 char cek_menang_7x7(Papan papan);
-
 bool cek_tempat_kosong(Papan papan, int baris, int kolom);
-bool cek_papan_penuh;
+bool cek_papan_penuh(Papan papan);
 
 void cetak_hasil_permainan();
-
 int ulangi_permainan();
-
 void hapus_papan(Papan *papan);
 
 void simpan_skor();
 void hitung_skor();
+
+void gotoxy(int x, int y);
+void gotoxy(int x, int y);
 
 int main(){
 	Pemain pemain1, pemain2;
@@ -77,8 +77,6 @@ void pilih_dimensi_papan(){
 }
 
 void mulai_permainan(){
-
-
 
 }
 
@@ -111,10 +109,10 @@ void tampilan_score(){
 	}while(papan.kotak[baris][kolom] != ' ');
 }
 
-<<<<<<< HEAD
 void giliran_pemain(Pemain pemain, Papan papan){
     int baris;
 	int kolom;
+	
 
 	do{	
 		printf("Enter row #(1-3): ");
@@ -139,8 +137,6 @@ int x, y;
 	y = rand() % 7;
 }
 
-=======
->>>>>>> 98f03d9f112c2cab58b728945ba338e89bfe9d7f
 char cek_menang(char flag){
 	char menang;
     switch (flag){
