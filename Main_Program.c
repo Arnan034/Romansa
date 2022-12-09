@@ -41,6 +41,7 @@ void tampilan_papan();
 void tampilan_score();
 
 void giliran_pemain();
+void bot_mudah();
 
 char cek_menang(char flag);
 
@@ -207,6 +208,12 @@ void giliran_pemain(Pemain pemain, Papan papan){
 			printf("Invalid Move!\n");
 		}
 	}while(papan.kotak[baris][kolom] != ' ');
+}
+
+Void bot_mudah(){
+int x, y;
+	x = rand() % 7;
+	y = rand() % 7;
 }
 
 char cek_menang(char flag){
