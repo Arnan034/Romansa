@@ -66,13 +66,8 @@ void hitung_skor();
 
 void gotoxy(int x, int y);
 
-void timer();
-
-void simpan_skor();
-
-void hitung_skor();
-
 void gotoxy(int x, int y);
+
 
 int main(){
 	Pemain pemain1, pemain2;
@@ -175,10 +170,27 @@ void tampilan_score(){
 	gotoxy(14,15); printf("S C O R E : 0");
 	gotoxy(83,15); printf("S C O R E : 0");
 }
+	do{	
+		printf("Enter row #(1-3): ");
+		scanf("%d", &baris);
+		baris--;
+		printf("Enter column #(1-3): ");
+		scanf("%d", &kolom);
+		kolom--;
+		
+		if (cek_tempat_kosong(papan, baris, kolom)){
+			papan.kotak[baris][kolom] = pemain.simbol;
+			break;
+		} else {
+			printf("Invalid Move!\n");
+		}
+	}while(papan.kotak[baris][kolom] != ' ');
+}
+
 void giliran_pemain(Pemain pemain, Papan papan){
     int baris;
 	int kolom;
-	
+
 	do{	
 		printf("Enter row #(1-3): ");
 		scanf("%d", &baris);
