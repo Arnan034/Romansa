@@ -1,12 +1,9 @@
 <<<<<<< HEAD
 #include<stdio.h>
 #include<windows.h>
-<<<<<<< HEAD
-=======
 #include <stdio.h>
 #include <stdbool.h>
 >>>>>>> 6d63f32295d1e7c9e37e3ce9c740d5622f770c03
->>>>>>> 2b18ff69415dbdeae698e7a132dca0548eca80ec
 
 typedef struct(){
     char nama[10];
@@ -57,6 +54,7 @@ char cek_menang_7x7();
 
 bool cek_tempat_kosong(Papan papan);
 
+
 void cetak_hasil_permainan();
 
 int ulangi_permainan();
@@ -72,11 +70,7 @@ void hitung_skor();
 <<<<<<< HEAD
 void gotoxy(int x, int y);
 =======
-<<<<<<< HEAD
-void gotoxy(int x, int y);
-=======
 >>>>>>> 6d63f32295d1e7c9e37e3ce9c740d5622f770c03
->>>>>>> 2b18ff69415dbdeae698e7a132dca0548eca80ec
 
 int main(){
 
@@ -381,7 +375,7 @@ void cetak_hasil_permainan(){
 }
 
 int ulangi_permainan(){
-
+    
 }
 
 void hapus_papan(Papan *papan){
@@ -411,8 +405,4 @@ void gotoxy(int x, int y){
 	coord.X = x;
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 2b18ff69415dbdeae698e7a132dca0548eca80ec
