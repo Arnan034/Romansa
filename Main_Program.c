@@ -54,6 +54,7 @@ char cek_menang_7x7();
 
 bool cek_tempat_kosong(Papan papan);
 
+
 void cetak_hasil_permainan();
 
 int ulangi_permainan();
@@ -374,7 +375,7 @@ void cetak_hasil_permainan(){
 }
 
 int ulangi_permainan(){
-
+    
 }
 
 void hapus_papan(Papan *papan){
