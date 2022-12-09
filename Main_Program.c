@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct(){
+typedef struct{
     char nama[10];
     char simbol;
     int skor;
 }Pemain;
 
-typedef struct(){
+typedef struct{
     char kotak[7][7];
     int ukuran;
 }Papan;
 
-typedef struct(){
+typedef struct{
     int jam;
     int menit;
     int detik;
@@ -54,10 +54,11 @@ void urutkan_skor(Pemain pemain);
 
 
 int main(){
+	Pemain pemain1, pemain2;
 
 	cetak_menu_awal();
-	pilih_pemain(Pemain *pemain1, Pemain *pemain2);
-	pilih_dimensi_papan(Papan *papan);
+	pilih_pemain (&pemain1, &pemain2);
+	pilih_dimensi_papan(&papan);
 	mulai_permainan();
 	cetak_hasil_permainan();
 	ulangi_permainan();
@@ -292,10 +293,8 @@ int ulangi_permainan(){
 }
 
 void hapus_papan(Papan *papan){
-	int i, j;
-	
-	for (i=0; i<papan.ukuran; i++){
-		for(j=0; i<papan.ukuran){
+	for (int i=0; i<papan.ukuran; i++){
+		for(int j=0; i<papan.ukuran){
 			papan.kotak[i][j] = ' ';
 		}
 	}
