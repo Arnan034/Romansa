@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 #include<stdio.h>
 #include<windows.h>
+<<<<<<< HEAD
+=======
+#include <stdio.h>
+#include <stdbool.h>
+>>>>>>> 6d63f32295d1e7c9e37e3ce9c740d5622f770c03
+>>>>>>> 2b18ff69415dbdeae698e7a132dca0548eca80ec
 
 typedef struct(){
     char nama[10];
@@ -8,7 +15,8 @@ typedef struct(){
 }Pemain;
 
 typedef struct(){
-    char papan[7][7];
+    char kotak[7][7];
+    int ukuran;
 }Papan;
 
 typedef struct(){
@@ -47,11 +55,13 @@ char cek_menang_5x5();
 
 char cek_menang_7x7();
 
-int cek_tempat_kosong();
+bool cek_tempat_kosong(Papan papan);
 
-void cetak_tampilan_menang();
+void cetak_hasil_permainan();
 
 int ulangi_permainan();
+
+void hapus_papan(Papan *papan);
 
 void timer();
 
@@ -59,11 +69,24 @@ void simpan_skor();
 
 void hitung_skor();
 
+<<<<<<< HEAD
 void gotoxy(int x, int y);
+=======
+<<<<<<< HEAD
+void gotoxy(int x, int y);
+=======
+>>>>>>> 6d63f32295d1e7c9e37e3ce9c740d5622f770c03
+>>>>>>> 2b18ff69415dbdeae698e7a132dca0548eca80ec
 
 int main(){
 
-
+	cetak_menu_awal();
+	pilih_pemain(Pemain *pemain1, Pemain *pemain2);
+	pilih_dimensi_papan(Papan *papan);
+	mulai_permainan();
+	cetak_hasil_permainan();
+	ulangi_permainan();
+	simpan_skor();
 }
 
 void cetak_menu_awal(){
@@ -345,16 +368,30 @@ char cek_menang_7x7(){
     
     return ' ';
 }
-int cek_tempat_kosong(){
-
+bool cek_tempat_kosong(Papan papan, int baris, int kolom){
+	if(papan.kotak[baris][kolom] == ' '){
+		return true;
+	}else{
+		return false;
+	}
 }
 
-void cetak_tampilan_menang(){
+void cetak_hasil_permainan(){
 
 }
 
 int ulangi_permainan(){
 
+}
+
+void hapus_papan(Papan *papan){
+	int i, j;
+	
+	for (i=0; i<papan.ukuran; i++){
+		for(j=0; i<papan.ukuran){
+			papan.kotak[i][j] = ' ';
+		}
+	}
 }
 
 void timer(){
@@ -374,4 +411,8 @@ void gotoxy(int x, int y){
 	coord.X = x;
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 2b18ff69415dbdeae698e7a132dca0548eca80ec
