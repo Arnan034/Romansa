@@ -247,13 +247,8 @@ void tampilan_game_play(){
 	gotoxy(91,23); scanf("%d", &colums);
 }
 void tampilan_papan(){
-	int l = 0;
-	for(int e = 0; e < 7; e++){
-		for (int f = 0; f < 7; f++){
-		A[e][f] = '0';
-		}
-	}// ini nantinya akan di reset board prosedur reset board nanti
 	printf("\033[1;37m");
+	int l = 0;
 	for (int i = 3; i <= 17; i++){
 		if (i % 2 == 1){
 			gotoxy(40,i);printf("+---+---+---+---+---+---+---+");
@@ -263,6 +258,7 @@ void tampilan_papan(){
 			l++;
 		}
 	}
+	printf("\033[0m");
 }
 void tampilan_color_X_O(){
 	int a, b;

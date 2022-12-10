@@ -11,6 +11,7 @@ void tampilan_input_main_lagi();
 void gotoxy(int x, int y);
 
 int main(){
+	system("color");
 	int x;
 	x = 1;
 	if (x == 1){
@@ -42,7 +43,7 @@ void tampilan_tie(){
 }
 
 void tampilan_champion(){
-	gotoxy(61,3); printf(" 1010                          0110 ");
+	gotoxy(61,3); printf("\033[1;33m 1010                          0110 ");
 	gotoxy(61,4); printf("10  0110101010101010100000100100  11");
 	gotoxy(61,5); printf("00   01010010101010010111001001   11");
 	gotoxy(61,6); printf(" 111 01010100101001101010100101 101 ");
@@ -60,7 +61,7 @@ void tampilan_champion(){
 	gotoxy(61,18); printf("    10101110001010110111000100      ");
 }
 void tampilan_good(){
-	gotoxy(65,3); printf("             00011                  ");
+	gotoxy(65,3); printf("\033[1;34m             00011                  ");
 	gotoxy(65,4); printf("            1011001                 ");
 	gotoxy(65,5); printf("            1001001                 ");
 	gotoxy(65,6); printf("           01010101                 ");
@@ -82,6 +83,44 @@ void tampilan_input_main_lagi(){
 	gotoxy(23,16); printf("1. Y A");
 	gotoxy(23,17); printf("2. T I D A K");
 	gotoxy(23,15); printf("M A I N  L A G I ? ");scanf("%d", &d);
+}
+void tampilan_high_score(){
+	int x = 0;
+	int y = 0;
+	gotoxy(x,y); printf("01  11  10  1000010  10  00");
+	gotoxy(x,y); printf("00  01  10  01       00  10");
+	gotoxy(x,y); printf("001001  00  11  010  110101");
+	gotoxy(x,y); printf("01  01  10  01   10  01  11");
+	gotoxy(x,y); printf("10  10  10  1011100  10  01");
+	
+	gotoxy(x,y); printf("011011  101010  1000010  10100   010101");
+	gotoxy(x,y); printf("00      10      01   10  00  10  10");
+	gotoxy(x,y); printf("001001  00      11   10  110101  100011");
+	gotoxy(x,y); printf("    01  10      01   10  01 11   01");
+	gotoxy(x,y); printf("101110  101010  1011100  10  01  110101");
+	
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	gotoxy(x,y); printf("|     |                         |          |");
+	gotoxy(x,y); printf("+-----+-------------------------+----------+");
+	
 }
 
 void gotoxy(int x, int y){
