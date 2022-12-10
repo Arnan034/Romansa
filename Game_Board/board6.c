@@ -6,7 +6,7 @@ void tampilan_wins();
 void tampilan_tie();
 void tampilan_champion();
 void tampilan_good();
-void tampilan_input();
+void tampilan_input_main_lagi();
 
 void gotoxy(int x, int y);
 
@@ -16,11 +16,11 @@ int main(){
 	if (x == 1){
 		tampilan_wins();
 		tampilan_champion();
-		tampilan_input();
+		tampilan_input_main_lagi();
 	} else {
 		tampilan_tie();
 		tampilan_good();
-		tampilan_input();
+		tampilan_input_main_lagi();
 	}
 }
 
@@ -77,7 +77,7 @@ void tampilan_good(){
 	gotoxy(65,17); printf("        1010100001100001001011      ");
 	gotoxy(65,18); printf("            101010010000010         ");
 }
-void tampilan_input(){
+void tampilan_input_main_lagi(){
 	int d;
 	gotoxy(23,16); printf("1. Y A");
 	gotoxy(23,17); printf("2. T I D A K");

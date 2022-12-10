@@ -45,7 +45,6 @@ void tampilan_input(){
 	gotoxy(43,20);printf("+----------------------+");
 	gotoxy(43,21);printf("|                      |");
 	gotoxy(43,22);printf("+----------------------+");
-	gotoxy(92,23);printf("9.Back");
 	gotoxy(54,21);scanf("%d", &z);
 }
 

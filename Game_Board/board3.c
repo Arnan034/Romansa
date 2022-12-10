@@ -13,7 +13,7 @@ int main(){
 	tampilan_3x3();
 	tampilan_5x5();
 	tampilan_7x7();
-	tampilan_input();
+	tampilan_input_pilih_board();
 }
 
 void tampilan_3x3(){
@@ -40,14 +40,13 @@ void tampilan_7x7(){
 	gotoxy(40,18); printf("001      01   10          000");
 }
 
-void tampilan_input(){
+void tampilan_input_pilih_board(){
 	int z;
 	gotoxy(37,0);printf("S E L E C T   D I M E N S I O N ?");
 	gotoxy(50,19);printf("3 / 5 / 7");
 	gotoxy(43,20);printf("+----------------------+");
 	gotoxy(43,21);printf("|                      |");
 	gotoxy(43,22);printf("+----------------------+");
-	gotoxy(92,23);printf("9.Back");
 	gotoxy(54,21);scanf("%d", &z);
 }
 
