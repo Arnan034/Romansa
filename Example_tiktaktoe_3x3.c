@@ -17,13 +17,10 @@ char check_winner();
 void print_winner(char winner);
 
 int main(){
-	char response[2];
-	do{
 	char winner = ' ';
 	
 	reset_board();
-	
-	while(winner == ' ' && check_free_spaces() != 0){
+	while((winner == ' ') && (check_free_spaces() != 0)){
 		print_board();
 		player_move_x();
 		winner = check_winner();
@@ -39,10 +36,6 @@ int main(){
 	}
 	print_board();
 	print_winner(winner);
-	printf("\n\ndo you wanna play again? (Y/N): ");
-	scanf("%c ", &response[1]);fflush(stdin);
-	response[1] = toupper(response[1]);
-	}while(response[1] == 'Y');
 	
 	return 0;	
 }
@@ -50,7 +43,7 @@ int main(){
 void reset_board(){
 	for(int i = 0; i < 3; i++){
 		for(int j = 0; j < 3; j++){
-		board [i][j] = ' ';	
+		board[i][j] = ' ';	
 		}	
 	}
 }
@@ -65,15 +58,15 @@ void print_board(){
 }
 
 int check_free_spaces(){
+	int free_spaces = 9;
 	for (int i = 0; i < 3; i++){
-		for (int j = 0; j < 3; j++){
-			if (board[i][j] = ' '){
-				return 1;
-			}else{
-				return 0;
+		for (int j = 0; j < 3; i++){
+			if (board[i][j] != ' '){
+				free_spaces--;
 			}
-		}	
+		}
 	}
+	return free_spaces;
 }
 
 void player_move_x(){
