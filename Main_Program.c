@@ -14,40 +14,57 @@ typedef struct{
     int ukuran;
 }Papan;
 
-typedef struct{
-    int jam;
-    int menit;
-    int detik;
-}Time;
-
 void cetak_menu_awal();
+	void tampilan_tiktaktoe();
+	void tampilan_1play();
+	void tampilan_2exit();
+	void tampilan_input_awal();
+
+void keluar_permainan();
+	void tampilan_thankyou();
+	void tampilan_for();
+	void tampilan_playing();
 
 void pilih_pemain();
+	void tampilan_1single();
+	void tampilan_2multi();
+	void tampilan_input_cara_bermain();
 
 void pilih_dimensi_papan();
+	void tampilan_3x3();
+	void tampilan_5x5();
+	void tampilan_7x7();
+	void tampilan_input_pilih_board();
+	void cetak_papan();
 
-void cetak_papan();
-
-void tampilan_player_biner();
-
-void tampilan_row_colums();
-
-void tampilan_nama_player();
-
-void tampilan_papan();
-
-void tampilan_score();
+void input_your_nickname();
+	void tampilan_input_nickname();
 
 void mulai_permainan();
+	void giliran_pemain();
+	void game_board_permainan();
+		void tampilan_papan();
+		void tampilan_color_X_O();
+		void tampilan_player_biner();
+		void tampilan_row_colums();
+		void tampilan_nama_player();
+		void tampilan_score();
+		void tampilan_aksesoris_tiktaktoe();
 
-void giliran_pemain();
 char cek_menang(char flag);
-char cek_menang_3x3(Papan papan);
-char cek_menang_5x5(Papan papan);
-char cek_menang_7x7(Papan papan);
+	char cek_menang_3x3(Papan papan);
+	char cek_menang_5x5(Papan papan);
+	char cek_menang_7x7(Papan papan);
+	
 bool cek_tempat_kosong(Papan papan, int baris, int kolom);
 void cetak_hasil_permainan();
+
 int ulangi_permainan();
+	void tampilan_tie();
+	void tampilan_champion();
+	void tampilan_good();
+	int tampilan_input_main_lagi();
+
 void hapus_papan(Papan *papan);
 
 void simpan_skor();
@@ -60,81 +77,238 @@ int main(){
 	Pemain pemain1, pemain2;
 	Papan papan;
 	
-
-	pilih_pemain(&pemain1, &pemain2);
-	pilih_dimensi_papan(&papan);   
-	mulai_permainan();        
-	cetak_hasil_permainan();
-	ulangi_permainan();
-	simpan_skor();
 }
+
 
 void cetak_menu_awal(){
-
+	system("cls");
+	tampilan_tiktaktoe();
+	tampilan_1play();
+	tampilan_2exit();
+	tampilan_input_awal();
+}
+void tampilan_tiktaktoe(){
+	gotoxy(19,2);printf("\033[1;37m010101  01  101010      010101    1001    101010      101010  0110010  010101");
+	gotoxy(21,3);printf("10    10  01            10     01  10   01            01    10   01  10");
+	gotoxy(21,4);printf("01    01  10            01    10101001  10            10    01   10  011001");
+	gotoxy(21,5);printf("10    10  01            10    01    10  01            01    10   01  10");
+	gotoxy(21,6);printf("01    01  101010        01    10    01  101010        10    0101010  010101\033[0m");
+}
+void tampilan_1play(){
+	gotoxy(33,8);printf("\033[1;32m11        1010011  01        1000    11    11");
+	gotoxy(33,9);printf("01        01   10  10      01  10     10  01");
+	gotoxy(33,10);printf("00        0010101  01      10101001    1101");
+	gotoxy(33,11);printf("01        10       00      10    01     01");
+	gotoxy(33,12);printf("10        01       101010  00    10     10\033[0m");
+}
+void tampilan_2exit(){
+	gotoxy(33,14); printf("\033[1;31m010101        010111   10   00   01   010010");
+	gotoxy(33,15); printf("    10        10        01 01    00     10");
+	gotoxy(33,16); printf("010101        001101     111     11     01");
+	gotoxy(33,17); printf("10            10        10 10    00     10");
+	gotoxy(33,18); printf("010101        100101   01   01   10     01\033[0m");
+}
+void tampilan_input_awal(){
+	gotoxy(43,20);printf("\033[1;37m+----------------------+");
+	gotoxy(43,21);printf("|                      |");
+	gotoxy(43,22);printf("+----------------------+");
+	gotoxy(54,21);scanf("%d", &input1);
 }
 
+
+void keluar_permainan(){
+	system("cls");
+	tampilan_thankyou();
+	tampilan_for();
+	tampilan_playing();
+}
+void tampilan_thankyou(){
+	gotoxy(20,2);printf("\033[1;37m101010   10  01     101     101   00   11  10   10    11   101001   01  11");
+	gotoxy(22,3);printf("10     01  10    10 10    0101  10   01 01     10  01    01  00   10  00");
+	gotoxy(22,4);printf("10     110101   1110011   01 11 10   1001       0101     10  10   01  10");
+	gotoxy(22,5);printf("01     01  10   10   10   11  0100   00 10       01      01  10   10  01");
+	gotoxy(22,6);printf("00     00  10   01   00   01   101   10  10      00      101001   100101");
+}
+void tampilan_for(){
+	gotoxy(45,8);printf("011010   000101   100110");
+	gotoxy(45,9);printf("00       10  01   01  10");
+	gotoxy(45,10);printf("111011   10  01   100011");
+	gotoxy(45,11);printf("01       01  10   10 11 ");
+	gotoxy(45,12);printf("01       101001   01  00");
+}
+void tampilan_playing(){
+	gotoxy(27,14); printf("101011   10         010     01    01   01   011   01   0111010");
+	gotoxy(27,15); printf("01  01   01        10 11     10  11    11   1100  11   11     ");
+	gotoxy(27,16); printf("101110   11       1000101     1001     11   01 10 01   10  111");
+	gotoxy(27,17); printf("10       01       10   01      10      01   01  1001   01   01");
+	gotoxy(27,18); printf("01       110100   00   11      01      10   10   001   1010101\033[0m");
+}
+	
+	
 void pilih_pemain(Pemain *pemain1, Pemain *pemain2){
-
+	system("cls");
+	tampilan_tiktaktoe();
+	tampilan_1single();
+	tampilan_2multi();
+	tampilan_input_cara_bermain();
 }
+void tampilan_1single(){
+	gotoxy(31,8);printf("\033[1;32m11        100011  01  011   01  1000010  01      101010");//53
+	gotoxy(31,9);printf("01        01      10  1010  10  01       01      10");
+	gotoxy(31,10);printf("00        000101  01  10 01 01  10  101  10      011010");
+	gotoxy(31,11);printf("01            10  00  01  1001  10   01  11      10");
+	gotoxy(31,12);printf("10        100100  11  10   001  0100110  100101  010110\033[0m");
+}
+void tampilan_2multi(){
+	gotoxy(31,14); printf("\033[1;34m010101        010   100  01  11  00      101000  10");//51
+	gotoxy(31,15); printf("    10        1010 1011  10  00  01        01    01");
+	gotoxy(31,16); printf("010101        11 101 01  11  01  01        00    10");
+	gotoxy(31,17); printf("10            10     10  10  10  00        10    10");
+	gotoxy(31,18); printf("010101        10     01  100101  101001    11    01\033[0m");
+}
+void tampilan_input_cara_bermain(){
+	gotoxy(43,20);printf("+----------------------+");
+	gotoxy(43,21);printf("|                      |");
+	gotoxy(43,22);printf("+----------------------+");
+	gotoxy(54,21);scanf("%d", &input2);
+}
+
 
 void pilih_dimensi_papan(){
-
+	system("cls");
+	tampilan_3x3();
+	tampilan_5x5();
+	tampilan_7x7();
+	tampilan_input_pilih_board();
+}
+void tampilan_3x3(){
+	gotoxy(40,2);printf("\033[1;32m1010101      01   10      0101011");
+	gotoxy(43,3);printf("110       10 01           110");
+	gotoxy(37,4);printf("0101001        011        1101011");
+	gotoxy(40,5);printf("010       10 01           101");
+	gotoxy(35,6);printf("1101001      01   10      0101000\033[0m");
+}
+void tampilan_5x5(){
+	gotoxy(39,8);printf("\033[1;33m11010101      01   10     00101011");
+	gotoxy(38,9);printf("110            10 01      110");
+	gotoxy(37,10);printf("00110101        011       01110101");
+	gotoxy(41,11);printf("010       10 01           101");
+	gotoxy(35,12);printf("11010001      01   10     10111000\033[0m");
+}
+void tampilan_7x7(){
+	gotoxy(39,14); printf("\033[1;31m11010101      01   10     10101011");
+	gotoxy(43,15); printf("110       10 01           110");
+	gotoxy(42,16); printf("001        011            011");
+	gotoxy(41,17); printf("010       10 01           101");
+	gotoxy(40,18); printf("001      01   10          000\033[0m");
+}
+void tampilan_input_pilih_board(){
+	gotoxy(38,0);printf("\033[1;37mS E L E C T   D I M E N S I O N ?");
+	gotoxy(50,19);printf("3 / 5 / 7");
+	gotoxy(43,20);printf("+----------------------+");
+	gotoxy(43,21);printf("|                      |");
+	gotoxy(43,22);printf("+----------------------+\033[0m");
+	gotoxy(54,21);scanf("%d", &input3);
+	getchar();
 }
 
-void mulai_permainan(){
 
+void tampilan_nickname(){
+	system("cls");
+	tampilan_tiktaktoe();
+	tampilan_input_nickname();
+}
+void tampilan_input_nickname(){
+	gotoxy(49,12);printf("\033[1;37mP L A Y E R %d", z);
+	gotoxy(47,13);printf("N I C K N A M E ?");
+	gotoxy(43,14);printf("+----------------------+");
+	gotoxy(43,15);printf("|                      |");
+	gotoxy(43,16);printf("+----------------------+");
+	gotoxy(46,17);printf("M A X  1 0  C H A R\033[0m");
+	gotoxy(50,15);scanf("%c", &pemain1);fflush(stdin);
+	z++;
 }
 
-void cetak_papan(){
-    tampilan_papan();
+
+void game_board_permainan(){
+	system("cls");
+	tampilan_papan();
+	tampilan_color_X_O();
 	tampilan_player_biner();
 	tampilan_row_colums();
 	tampilan_nama_player();
 	tampilan_score();
+	tampilan_aksesoris_tiktaktoe();
 }
-
 void tampilan_papan(){
-	char A[7][7];
+	printf("\033[1;37m");
 	int l = 0;
-	for(int e = 0; e < 7; e++){
-		for (int f = 0; f < 7; f++){
-		A[e][f] = '0';
-		}
-	}
 	for (int i = 3; i <= 17; i++){
 		if (i % 2 == 1){
 			gotoxy(40,i);printf("+---+---+---+---+---+---+---+");
 		}
 		if (i % 2 == 0){
-			gotoxy(40,i);printf("| %c | %c | %c | %c | %c | %c | %c |", A[l][0], A[l][1], A[l][2], A[l][3], A[l][4], A[l][5], A[l][6]);
+			gotoxy(40,i);printf("|   |   |   |   |   |   |   |");
 			l++;
 		}
 	}
+	printf("\033[0m");
 }
-
+void tampilan_color_X_O(){
+	int a, b;
+	a = 0;
+	for (int i = 3; i <= 17;i++){
+		b = 0;
+		for (int j = 40; j <= 66; j++){
+			if ((i % 2 == 0) && (j % 4 == 2)){
+				if(A[a][b] == 'X'){
+				gotoxy(j,i);printf("\033[1;31m%c\033[0m", A[a][b]);
+				} else if (A[a][b] == 'O'){
+					gotoxy(j,i);printf("\033[1;32m%c\033[0m", A[a][b]);
+					} else {
+						gotoxy(j,i);printf("\033[1;30m%c\033[0m", A[a][b]);
+					}
+			b++;
+			}
+		}
+		if (i % 2 == 0){
+		a++;
+		}
+	}
+}
 void tampilan_player_biner(){
-	gotoxy(17,6); printf("\033[1;31m");printf("010101");
+	gotoxy(17,6); printf("\033[1;34m010101");
 	gotoxy(16,7); printf("11010111");
-	gotoxy(16,8); printf("00010100");	
+	gotoxy(16,8); printf("00010100");
 	gotoxy(16,9); printf("11001011");
 	gotoxy(17,10); printf("110110");
 	gotoxy(14,11); printf("010100101010");
 	gotoxy(13,12); printf("10101010101001");	
 	gotoxy(13,13); printf("10101010101110");
-	gotoxy(86,6); printf("010101");
-	gotoxy(85,7); printf("11010111");
-	gotoxy(85,8); printf("00010100");
-	gotoxy(85,9); printf("11001011");
-	gotoxy(86,10); printf("110110");
-	gotoxy(83,11); printf("010100101010");
-	gotoxy(82,12); printf("10101010101001");	
-	gotoxy(82,13); printf("10101010101110");printf("\033[1;31m");
+	if (input2 == 1){
+		gotoxy(83,6); printf("\033[1;32m1000101110010101");
+		gotoxy(83,7);printf("10            01");
+		gotoxy(83,8);printf("00            01");
+		gotoxy(83,9);printf("01            11");
+		gotoxy(83,10);printf("10            10");
+		gotoxy(83,11);printf("1010010010010101");
+		gotoxy(83,12);printf("    01001011");
+		gotoxy(83,13);printf("  101000101010");
+	} else {
+	gotoxy(87,6); printf("\033[1;32m010101");
+	gotoxy(86,7); printf("11010111");
+	gotoxy(86,8); printf("00010100");
+	gotoxy(86,9); printf("11001011");
+	gotoxy(87,10); printf("110110");
+	gotoxy(84,11); printf("010100101010");
+	gotoxy(83,12); printf("10101010101001");	
+	gotoxy(83,13); printf("10101010101110");
+	}
 }
-
 void tampilan_row_colums(){
 	int l = 1;
-	printf("\033[1;34m");
-	gotoxy(49,1); printf("C O L U M N");
+	printf("\033[1;31m");
+	gotoxy(49,1); printf("C O L U M S");
 	gotoxy(41,2); printf(" 1   2   3   4   5   6   7");
 	gotoxy(36,8); printf("R");
 	gotoxy(36,10); printf("O");
@@ -145,18 +319,34 @@ void tampilan_row_colums(){
 			l++;
 		}
 	}
-	printf("\033[1;34m");
 }
-
 void tampilan_nama_player(){
-	gotoxy(16,4); printf("Arnanda");
-	gotoxy(85,4); printf("Bhisma");
+	gotoxy(16,4); printf("\033[1;37mArnanda");
+	if (input2 == 1){
+		gotoxy(84,4); printf("C O M P U T E R");	
+	} else {
+		gotoxy(86,4); printf("Bhisma");
+	}
 }
-
 void tampilan_score(){
 	gotoxy(14,15); printf("S C O R E : 0");
-	gotoxy(83,15); printf("S C O R E : 0");
+	gotoxy(84,15); printf("S C O R E : 0");
 }
+void tampilan_aksesoris_tiktaktoe(){
+	gotoxy(8,20);
+	printf("010101 01 101010    010101   1001   101010    101010 0110010 010101      +--------------------+\n");
+	printf("         10   10 01          10    01  10  01          01   10   01 10           |ROW    :            |\n");
+	printf("        01   01 10          01   10101001 10          10   01   10 011001        +--------------------+\n");
+	printf("       10   10 01          10   01    10 01          01   10   01 10             |COLUMS :            |\n");
+	printf("      01   01 101010      01   10    01 101010      10   0101010 010101          +--------------------+\n");
+}
+
+
+void mulai_permainan(){
+
+}
+
+void giliran_pemain(){
 	do{	
 		printf("Enter row #(1-3): ");
 		scanf("%d", &baris);
@@ -381,9 +571,79 @@ bool cek_tempat_kosong(Papan papan,int baris, int kolom){
 bool cek_papan_penuh;
 void cetak_hasil_permainan(){
 }
+
+
 int ulangi_permainan(){
-    
+    	system("cls");
+	if (input4 == 1){
+		tampilan_wins();
+		tampilan_champion();
+		tampilan_input_main_lagi();
+	} else {
+		tampilan_tie();
+		tampilan_good();
+		tampilan_input_main_lagi();
+	}
 }
+void tampilan_wins(){
+	gotoxy(31,7); printf("NAMA PLAYER");
+	gotoxy(19,9); printf("00     11  10  101   01  01 101001");//62
+	gotoxy(19,10); printf("10     00  11  0001  11   0 01");
+	gotoxy(19,11); printf("01 100 10  00  11 01 01     101111");
+	gotoxy(19,12); printf("1010 1011  10  00  1010         01");
+	gotoxy(19,13); printf("100   111  00  10   110     101010");
+}
+void tampilan_tie(){
+	gotoxy(15,9); printf("01  000101 00  010011     010111  01  010010");
+	gotoxy(15,10); printf("11    00    1  01           10    10  10");
+	gotoxy(15,11); printf("11    11       111011       01    11  011101");
+	gotoxy(15,12); printf("00    01           00       00    11  01");
+	gotoxy(15,13); printf("01    00       101011       11    01  100001");
+}
+void tampilan_champion(){
+	gotoxy(61,3); printf(" 1010                          0110 ");
+	gotoxy(61,4); printf("10  0110101010101010100000100100  11");
+	gotoxy(61,5); printf("00   01010010101010010111001001   11");
+	gotoxy(61,6); printf(" 111 01010100101001101010100101 101 ");
+	gotoxy(61,7); printf("   111010101010001010100100101000   ");
+	gotoxy(61,8); printf("      10010100100100000100100       ");
+	gotoxy(61,9); printf("       001000100100101001001        ");
+	gotoxy(61,10); printf("         10100010010100101          ");
+	gotoxy(61,11); printf("            1010101101              ");
+	gotoxy(61,12); printf("               0010                 ");
+	gotoxy(61,13); printf("               1011                 ");
+	gotoxy(61,14); printf("            0100100010              ");
+	gotoxy(61,15); printf("          00111011010001            ");
+	gotoxy(61,16); printf("       101011110010101001001        ");
+	gotoxy(61,17); printf("       001001010100010111101        ");
+	gotoxy(61,18); printf("    10101110001010110111000100      ");
+}
+void tampilan_good(){
+	gotoxy(65,3); printf("             00011                  ");
+	gotoxy(65,4); printf("            1011001                 ");
+	gotoxy(65,5); printf("            1001001                 ");
+	gotoxy(65,6); printf("           01010101                 ");
+	gotoxy(65,7); printf("           10011101111              ");
+	gotoxy(65,8); printf("         01010110111001001001       ");
+	gotoxy(65,9); printf(" 101   010101001101100001000101     ");
+	gotoxy(65,10); printf(" 101010101011101100101010           ");
+	gotoxy(65,11); printf(" 0101101010101110101000010101101    ");
+	gotoxy(65,12); printf(" 1110000100111100000110100010010    ");
+	gotoxy(65,13); printf(" 110001010100110101010110           ");
+	gotoxy(65,14); printf(" 001010100111010101000101010010     ");
+	gotoxy(65,15); printf(" 010101010000000011001010010010     ");
+	gotoxy(65,16); printf(" 000  1010100001101010100           ");
+	gotoxy(65,17); printf("        1010100001100001001011      ");
+	gotoxy(65,18); printf("            101010010000010         ");
+}
+int tampilan_input_main_lagi(){
+	gotoxy(23,16); printf("1. Y A");
+	gotoxy(23,17); printf("2. T I D A K");
+	gotoxy(23,15); printf("M A I N  L A G I ? ");scanf("%d", &main_lagi);
+	return main_lagi;
+}
+
+
 void hapus_papan(Papan *papan){
 	for (int i=0; i < papan->ukuran; i++){
 		for(int j=0; i < papan->ukuran; j++){
@@ -395,6 +655,7 @@ void simpan_skor(){
 }
 void hitung_skor(){
 }
+
 void gotoxy(int x, int y){
 	COORD coord;
 	coord.X = x;
