@@ -341,28 +341,11 @@ void tampilan_aksesoris_tiktaktoe(){
 	printf("      01   01 101010      01   10    01 101010      10   0101010 010101          +--------------------+\n");
 }
 
-
+/*=====================================================================================================================
 void mulai_permainan(){
 
 }
-
-void giliran_pemain(){
-	do{	
-		printf("Enter row #(1-3): ");
-		scanf("%d", &baris);
-		baris--;
-		printf("Enter column #(1-3): ");
-		scanf("%d", &kolom);
-		kolom--;
-		
-		if (cek_tempat_kosong(papan, baris, kolom)){
-			papan.kotak[baris][kolom] = pemain.simbol;
-			break;
-		} else {
-			printf("Invalid Move!\n");
-		}
-	}while(papan.kotak[baris][kolom] != ' ');
-}
+========================================================================================================================*/
 
 void giliran_pemain(Pemain pemain, Papan papan){
     int baris;
@@ -385,24 +368,32 @@ void giliran_pemain(Pemain pemain, Papan papan){
 		}
 	}while(papan.kotak[baris][kolom] != ' ');
 }
-Void bot_mudah(){
-int x, y;
-	x = rand() % 7;
-	y = rand() % 7;
+void bot_mudah(){
+int baris, kolom;
+
+	do{
+	baris = rand() % Papan.ukuran;
+	kolom = rand() % Papan.ukuran;
+	if (cek_tempat_kosong(papan, baris, kolom)){
+			papan.kotak[baris][kolom] = pemain.simbol;
+			break;
+		} else {
+			printf("Invalid Move!\n");
+		}
+	}while(papan.kotak[baris][kolom] != ' ');
 }
 
-=======
->>>>>>> 98f03d9f112c2cab58b728945ba338e89bfe9d7f
-char cek_menang(char flag){
+
+char cek_menang(){
 	char menang;
-    switch (flag){
-        case 1 : menang = cek_menang_3x3; 
+    switch (Papan.ukuran){
+        case 3 : menang = cek_menang_3x3; 
                  return menang;
                  break;
-        case 2 : menang = cek_menang_5x5; 
+        case 5 : menang = cek_menang_5x5; 
                  return menang;
                  break;
-        case 3 : menang = cek_menang_7x7;
+        case 7 : menang = cek_menang_7x7;
                  return menang;
                  break;
     }
@@ -568,8 +559,15 @@ bool cek_tempat_kosong(Papan papan,int baris, int kolom){
 		return false;
 	}
 }
-bool cek_papan_penuh;
-void cetak_hasil_permainan(){
+bool cek_papan_penuh(Papan papan){
+	for (int i = 0; i < Papan.ukuran; i++){
+		for (int j = 0; j < Papan.ukuran; j++){
+			if (Papan.kotak[i][j] == ' '){
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 
@@ -651,10 +649,11 @@ void hapus_papan(Papan *papan){
 		}
 	}
 }
+
+
 void simpan_skor(){
 }
-void hitung_skor(){
-}
+
 
 void gotoxy(int x, int y){
 	COORD coord;
