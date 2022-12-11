@@ -309,13 +309,18 @@ void mulai_permainan(){
 			}while(permainan.invalid_move);
 			winner = cek_menang();
 			if((winner == 'X') || (winner == 'O') || cek_papan_penuh() == false){
+				game_board_permainan();
+				gotoxy(41,18); printf("W E  H A V E  W I N N E R !");
+				sleep(5);
 				break;
 			}
 			if(permainan.input_cara_bermain == 1){
-				game_board_permainan();
 				giliran_computer(computer);
 				winner = cek_menang();
 				if((winner == 'X') || (winner == 'O') || cek_papan_penuh() == false){
+					game_board_permainan();
+					gotoxy(41,18); printf("W E  H A V E  W I N N E R !");
+					sleep(5);
 					break;
 				}		
 			} else {
@@ -325,6 +330,8 @@ void mulai_permainan(){
 				}while(permainan.invalid_move);
 				winner = cek_menang();
 				if((winner == 'X') || (winner == 'O') || cek_papan_penuh() == false){
+					gotoxy(41,18); printf("W E  H A V E  W I N N E R !");
+					sleep(5);
 					break;
 				}
 			}
@@ -354,7 +361,9 @@ void game_board_permainan(){
 	tampilan_score();
 	tampilan_aksesoris_tiktaktoe();
 	if (permainan.invalid_move){
-		gotoxy(86,25);printf("Invalid Move!\n");
+		gotoxy(86,25);printf("Invalid Move!");
+	} else {
+		gotoxy(86,25);printf("             ");
 	}
 }
 void cetak_papan(){
@@ -477,6 +486,7 @@ void giliran_pemain(Pemain pemain){
 	baris--;
 	gotoxy(91,23);scanf("%d", &kolom);
 	kolom--;
+	getchar();
 	
 	if(cek_tempat_kosong(baris, kolom)){
 		papan.kotak[baris][kolom] = pemain.simbol;
@@ -542,42 +552,36 @@ char cek_menang_3x3(){
 char cek_menang_5x5(){
     /*Cek Row */
     for(int i = 0; i < 5; i++){
-        if(((papan.kotak[i][0] == papan.kotak[i][2]) || (papan.kotak[i][4] == papan.kotak[i][2])) && ((papan.kotak[i][1] == papan.kotak[i][2]) && (papan.kotak[i][2] == papan.kotak[i][3]))){
+        if(((papan.kotak[i][0] == papan.kotak[i][2]) || (papan.kotak[i][4] == papan.kotak[i][2])) && (((papan.kotak[i][1] == papan.kotak[i][2]) && (papan.kotak[i][2] == papan.kotak[i][3])) && (papan.kotak[i][2] != ' '))){
         	return papan.kotak[i][2];
 		}
     }
     /*Cek Colums*/
 	for (int i = 0; i < 5; i++){
-        if(((papan.kotak[0][i] == papan.kotak[2][i]) || (papan.kotak[4][i] == papan.kotak[2][i])) && ((papan.kotak[1][i] == papan.kotak[2][i]) && (papan.kotak[2][i] == papan.kotak[3][i]))){
+        if(((papan.kotak[0][i] == papan.kotak[2][i]) || (papan.kotak[4][i] == papan.kotak[2][i])) && (((papan.kotak[1][i] == papan.kotak[2][i]) && (papan.kotak[2][i] == papan.kotak[3][i])) && (papan.kotak[2][i] != ' '))){
 			return papan.kotak[2][i];
     	}
 	}
     /*Cek Diagonals\*/
-    if ((papan.kotak[0][1] == papan.kotak[2][1]) && (papan.kotak[2][1] == papan.kotak[3][2]) && (papan.kotak[3][2] == papan.kotak[4][3]) && (papan.kotak[4][3] == papan.kotak[0][1])){
-        return papan.kotak[0][1];
-    }
-    if ((papan.kotak[0][0] == papan.kotak[1][1]) && (papan.kotak[1][1] == papan.kotak[2][2]) && (papan.kotak[2][2] == papan.kotak[3][3]) && (papan.kotak[3][3] == papan.kotak[0][0])){
-        return papan.kotak[0][0];
-    }
-    if ((papan.kotak[4][4] == papan.kotak[1][1]) && (papan.kotak[1][1] == papan.kotak[2][2]) && (papan.kotak[2][2] == papan.kotak[3][3]) && (papan.kotak[3][3] == papan.kotak[4][4])){
-        return papan.kotak[4][4];
-    }
-    if ((papan.kotak[0][1] == papan.kotak[1][2]) && (papan.kotak[1][2] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[3][4]) && (papan.kotak[3][4] == papan.kotak[0][1])){
-        return papan.kotak[0][1];
-    }
-    /*Cek Diagonals/*/
-     if ((papan.kotak[3][0] == papan.kotak[2][1]) && (papan.kotak[2][1] == papan.kotak[1][2]) && (papan.kotak[1][2] == papan.kotak[0][3]) && (papan.kotak[0][3] == papan.kotak[3][0])){
-        return papan.kotak[3][0];
-    }
-    if ((papan.kotak[4][0] == papan.kotak[3][1]) && (papan.kotak[3][1] == papan.kotak[2][2]) && (papan.kotak[2][2] == papan.kotak[1][3]) && (papan.kotak[1][3] == papan.kotak[4][0])){
-        return papan.kotak[4][0];
-    }
-    if ((papan.kotak[3][1] == papan.kotak[2][2]) && (papan.kotak[2][2] == papan.kotak[1][3]) && (papan.kotak[1][3] == papan.kotak[0][4]) && (papan.kotak[0][4] == papan.kotak[3][1])){
-        return papan.kotak[3][1];
-    }
-    if ((papan.kotak[4][1] == papan.kotak[3][2]) && (papan.kotak[3][2] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[1][4]) && (papan.kotak[1][4] == papan.kotak[4][1])){
-        return papan.kotak[4][1];
-    }
+    if((papan.kotak[1][0] != ' ') && (((papan.kotak[1][0] == papan.kotak[2][1]) && (papan.kotak[2][1] == papan.kotak[3][2])) && ((papan.kotak[3][2] == papan.kotak[4][3])) && (papan.kotak[4][3] == papan.kotak[1][0]))){
+    	return papan.kotak[1][0];
+	}
+	if((papan.kotak[0][1] != ' ') && (((papan.kotak[0][1] == papan.kotak[1][2]) && (papan.kotak[1][2] == papan.kotak[2][3])) && ((papan.kotak[2][3] == papan.kotak[3][4])) && (papan.kotak[3][4] == papan.kotak[0][1]))){
+    	return papan.kotak[0][1];
+	}
+	if((papan.kotak[2][2] != ' ') && (((papan.kotak[0][0] == papan.kotak [2][2]) || (papan.kotak[4][4] == papan.kotak [2][2])) && (((papan.kotak[1][1] == papan.kotak [2][2]) && (papan.kotak[2][2] == papan.kotak [3][3])) && (papan.kotak[3][3] == papan.kotak [1][1])))){
+		return papan.kotak[2][2];
+	}
+	/*Cek Diagonals/*/
+	if((papan.kotak[0][3] != ' ') && (((papan.kotak[0][3] == papan.kotak[1][2]) && (papan.kotak[1][2] == papan.kotak[2][1])) && ((papan.kotak[2][2] == papan.kotak[3][0]) && (papan.kotak[3][0] == papan.kotak[0][3])))){
+    	return papan.kotak[0][3];
+	}
+	if((papan.kotak[1][4] != ' ') && (((papan.kotak[1][4] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[3][2])) && ((papan.kotak[3][2] == papan.kotak[4][1])) && (papan.kotak[4][1] == papan.kotak[1][4]))){
+    	return papan.kotak[1][4];
+	}
+	if((papan.kotak[2][2] != ' ') && (((papan.kotak[0][4] == papan.kotak [2][2]) || (papan.kotak[4][0] == papan.kotak [2][2])) && (((papan.kotak[1][3] == papan.kotak [2][2]) && (papan.kotak[2][2] == papan.kotak [3][1])) && (papan.kotak[3][1] == papan.kotak [1][3])))){
+		return papan.kotak[2][2];
+	}
     return ' ';
 }
 char cek_menang_7x7(){
@@ -687,6 +691,7 @@ void ulangi_permainan(char winner){
 		if(permainan.input_cara_bermain == 1){
 			tampilan_wins(pemain1.nama);
 			gotoxy(31,7);printf("C O M P U T E R");
+			computer.score++;
 		}
 			tampilan_wins(pemain2.nama);
 			tampilan_champion();
