@@ -51,10 +51,10 @@ void mulai_permainan();
 		void tampilan_score();
 		void tampilan_aksesoris_tiktaktoe();
 
-char cek_menang(char flag);
-	char cek_menang_3x3(Papan papan);
-	char cek_menang_5x5(Papan papan);
-	char cek_menang_7x7(Papan papan);
+char cek_menang();
+	char cek_menang_3x3();
+	char cek_menang_5x5();
+	char cek_menang_7x7();
 	
 bool cek_tempat_kosong(Papan papan, int baris, int kolom);
 void cetak_hasil_permainan();
@@ -386,7 +386,7 @@ void giliran_pemain(Pemain pemain, Papan papan){
 	}while(papan.kotak[baris][kolom] != ' ');
 }
 Void bot_mudah(){
-int x, y;
+	int x, y;
 	x = rand() % 7;
 	y = rand() % 7;
 }
