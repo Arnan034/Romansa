@@ -67,8 +67,7 @@ int ulangi_permainan();
 
 void hapus_papan(Papan *papan);
 
-void simpan_skor();
-void hitung_skor();
+void masukkan_score_baru (Pemain pemain_baru);
 
 void gotoxy(int x, int y);
 void gotoxy(int x, int y);
@@ -651,7 +650,42 @@ void hapus_papan(Papan *papan){
 }
 
 
-void simpan_skor(){
+void masukkan_score_baru (Pemain pemain_baru){
+	Pemain data_file[100];
+	Pemain temp;
+	FILE *fp;
+	int i=0,size;
+	int posisi=0;
+	char ch; 
+ 
+	fp=fopen("HighScore.txt","r");
+		while(ch!=EOF){
+			fscanf(fp,"%s%d",&data_file[i].nama,&data_file[i].score);  
+			ch=fgetc(fp);
+			i++;  
+		}
+	fclose(fp);
+	size=i-1;
+	
+	for (i=0; i<size; i++){
+		if (pemain_baru.score>data_file[i].score){
+			posisi=i; break;
+		}else{
+			posisi++;
+		}
+	}
+	data_file[posisi]=pemain_baru;
+	
+	for (i=size; i>posisi; i--){
+		temp=data_file[i];
+		data_file[i]=data_file[i-1];
+		data_file[i+1]=temp;
+	}
+	
+	fp=fopen("HighScore.txt","w");
+	for(i=0; i<=size; i++)
+	fprintf(fp,"%s %d\n",data_file[i].nama,data_file[i].score);
+	fclose(fp);
 }
 
 
