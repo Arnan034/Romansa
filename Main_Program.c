@@ -1,7 +1,10 @@
-#include <stdio.h>
-#include <windows.h>
-#include <stdio.h>
-#include <stdbool.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<windows.h>
+#include<stdio.h>
+#include<stdbool.h>
+#include<unistd.h>
+#include<pthread.h>
 
 typedef struct{
     char nama[10];
@@ -11,73 +14,116 @@ typedef struct{
 
 typedef struct{
     char kotak[7][7];
-    int ukuran;
+	int ukuran;
 }Papan;
 
-void cetak_menu_awal();
-	void tampilan_tiktaktoe();
-	void tampilan_1play();
-	void tampilan_2exit();
-	void tampilan_input_awal();
+typedef struct{
+	int input_awal;
+	int input_cara_bermain;
+	int jumlah_permain;
+	int main_lagi;
+	bool penentu_player;
+	bool penentu_dimensi;
+	bool invalid_move;
+	bool penentu_main_lagi;
+	bool cursor;
+	bool stoptimer;
+}Permainan;
 
-void keluar_permainan();
-	void tampilan_thankyou();
-	void tampilan_for();
-	void tampilan_playing();
+typedef struct{
+	int second;
+}Time;
 
-void pilih_pemain();
-	void tampilan_1single();
-	void tampilan_2multi();
-	void tampilan_input_cara_bermain();
+Permainan permainan;
+Papan papan;
+Pemain pemain1, pemain2, computer;
+Time Timer;
+char winner = ' ';//untuk mendeklarasikan char pemenang masih kosong
 
-void pilih_dimensi_papan();
-	void tampilan_3x3();
-	void tampilan_5x5();
-	void tampilan_7x7();
-	void tampilan_input_pilih_board();
-	void cetak_papan();
+void cetak_menu_awal();//prosedur cetak menu awal dengan tujuan untuk memanggil prosedur yang ada dibawah
+	void tampilan_tiktaktoe();//prosedur ini sebagai tampilan sebuah teks tik tak toe
+	void tampilan_1play();//prosedur ini untuk menampilkan teks 1 play
+	void tampilan_2exit();//prosedur ini untuk menampilakan teks 2 exit
+	void tampilan_input_awal();//prosedur ini sebagai inputan dan menentukan apakah ingin memainkan game atau keluar.
 
-void input_your_nickname();
-	void tampilan_input_nickname();
+void keluar_permainan();//prosedur ini untuk mencetak keluar permainan dengan tujuan untuk memanggil prosedur yang ada dibawah
+	void tampilan_thankyou();//prosedur ini untuk mencetak tampilan dari THANKYOU
+	void tampilan_for();//prosedur ini untuk mencetak tampilan dari FOR 
+	void tampilan_playing();// prosedur ini untuk mencetak tampilan PLAYING
 
-void mulai_permainan();
-	void giliran_pemain();
-	void game_board_permainan();
-		void tampilan_papan();
-		void tampilan_color_X_O();
-		void tampilan_player_biner();
-		void tampilan_row_colums();
-		void tampilan_nama_player();
-		void tampilan_score();
-		void tampilan_aksesoris_tiktaktoe();
+void pilih_pemain();//prosedur pilih pemain dengan tujuan player memilih dengan siapa dia bermain singgle atau multiplayer
+	void tampilan_1single();//prosedur ini untuk mencetak tampilan dari 1 singgle
+	void tampilan_2multi();//prosedur ini untuk mencetak tampilan dari 2 multi
+	void tampilan_input_cara_bermain();//prosedur ini sebagai inputan dan menentukan apakah ingin bermain dengan siapa apakah singleplayer atau multiplayer
 
-char cek_menang(char flag);
-	char cek_menang_3x3(Papan papan);
-	char cek_menang_5x5(Papan papan);
-	char cek_menang_7x7(Papan papan);
+void pilih_dimensi_papan();//prosedur pilih dimensi papan untuk mencetak papan yang akan dipilih dengan tujuan hasil dari inputannya akan menjadi sebuah papan dia bermain
+	void tampilan_3x3();//prosedur ini untuk mencetak tampilan dari 3 x 3
+	void tampilan_5x5();//prosedur ini untuk mencetak tampilan dari 5 x 5
+	void tampilan_7x7();//prosedur ini untuk mencetak tampilan dari 7 x 7
+	void tampilan_input_pilih_board();//prosedur ini sebagai inputannya yang menentukan ukuran papan yang akan dimainkannya
+	void cetak_papan();//prosedur ini untuk mencetak tampilan dari papan game.
+
+void tampilan_nickname();//prosedur ini untuk mencetak tampilan dari persegi inputan dan memanggil beberapa modul sebelumnya sebagai tampilan
+	void tampilan_input_nickname();//prosedur ini untuk mencetak tampilan dari nickname dan juga sebagai inputan nickname player
+
+void mulai_permainan();//prosedur mulai permaian prosedur adalah sebuah eksekusi atau alur perjalanan dari sebuah permaianan mulai dari cetak papan hingga penampilan high score
+	void hapus_papan();//prosedur ini untuk menghapus papan menjadi ' ' tampilan kosong namun apabila player dan dibatasi dengan angka 0
+	void game_board_permainan();//prosedur ini berfungsi untuk mencetak alur permaianan dan desain dari sebuah permainan
+		void cetak_papan();//prosedur ini untuk mencetak tampilan dari papan game.
+		void tampilan_color_X_O();//prosedur ini sebagai tampilan warna dalam papannya apabila X maka berwarna merah dan apabila O maka berwarna hijau
+		void tampilan_player_biner();//prosedur ini untuk mencetak tampilan dari emotikon dari orang atau computer yang didesain menggunakan angka 0 dan 1
+		void tampilan_row_colums();//prosedur ini untuk mencetak tampilan dari baris dan kolom sebagai petunjuk baris dan kolom
+		void tampilan_nama_player();//prosedur ini untuk mencetak tampilan dari nama player yang sebelumnya diinputkan
+		void tampilan_score();//prosedur ini untuk mencetak tampilan dari score dari pemain
+		void tampilan_aksesoris_tiktaktoe();//prosedur ini untuk mencetak tampilan dari teks tik tak toe
+	void giliran_pemain();//prosedur ini berfungsi untuk giliran pemain bermain untuk bergerak
+	void giliran_computer();//prosedur ini berfungsi untuk komputer bergerak
+	bool cek_tempat_kosong();//function ini berfungsi untuk mengecek apakah kotak yang di inputkan oleh pemain itu kosong atau tidak
+	char cek_menang();//function ini berfungsi untuk memilih pengecekan mana yang akan dipakai sesuai dengan pilih dimensi bermain
+		char cek_menang_3x3();//function ini berfungsi untuk mengecek papan apakah kotak tersebut membentuk garis lurus 3 berurutan secara vertikal, horizontal, diagonal.
+		char cek_menang_5x5();//function ini berfungsi untuk mengecek papan apakah kotak tersebut membentuk garis lurus 4 berurutan secara vertikal, horizontal, diagonal.
+		char cek_menang_7x7();//function ini berfungsi untuk mengecek papan apakah kotak tersebut membentuk garis lurus 5 berurutan secara vertikal, horizontal, diagonal.
+	bool cek_papan_penuh();//function ini berfungsi untuk mengecek papan apakah papan tersebut sudah terisi semua atau tidak
 	
-bool cek_tempat_kosong(Papan papan, int baris, int kolom);
-void cetak_hasil_permainan();
+void ulangi_permainan(char winner);//prosedur ini berfungsi untuk mengulangi permainan berdasarkan jawaban yang di masukan
+	void tampilan_wins();//prosedur ini untuk mencetak tampilan dari teks wins
+	void tampilan_tie();//prosedur ini untuk mencetak tampilan dari teks tie
+	void tampilan_champion();//prosedur ini untuk mencetak tampilan dari champion atau piala
+	void tampilan_good();//prosedur ini untuk mencetak tampilan dari emotikon memberikan jemput dengan arti goodjob
+	void tampilan_input_main_lagi();//prosedur ini untuk mencetak dan membaca masukan dari player apakah ingin bermain lagi atau tidak
+	void hitung_score();//prosedur ini untuk mencetak tampilan dari high score yang pernah bermain
 
-int ulangi_permainan();
-	void tampilan_tie();
-	void tampilan_champion();
-	void tampilan_good();
-	int tampilan_input_main_lagi();
-
-void hapus_papan(Papan *papan);
-
-void simpan_skor();
-void hitung_skor();
+void *timer_pemain1();//prosedur ini untuk mencetak tampilan dari timer untuk pemain 1
+void *timer_pemain2();//prosedur ini untuk mencetak tampilan dari timer untuk pemain 2
 
 void gotoxy(int x, int y);
-void gotoxy(int x, int y);
 
+/*================================================================================================================*/
+/*================================================================================================================*/
 int main(){
-	Pemain pemain1, pemain2;
-	Papan papan;
+	/*Deklarasi*/
+	permainan.jumlah_permain = 0;
+	papan.ukuran = 1;
+	/*Algoritma*/
+	system("color");
+	do{
+		cetak_menu_awal();
+		if(permainan.input_awal == 1){
+			pilih_pemain();
+			pilih_dimensi_papan();
+			tampilan_nickname();
+			mulai_permainan();
+		}
+		if(permainan.input_awal == 2){
+			keluar_permainan();//keluar permainan
+			return 0;	
+		}
+	}while((permainan.input_awal != 1) || (permainan.input_awal != 2));//loop ini berfungsi apabila player menginputkan selain dari 1 / 2 maka tidak akan keluar dan terjadinya looping
 	
+	return 0;
 }
+/*================================================================================================================*/
+/*================================================================================================================*/
 
 
 void cetak_menu_awal(){
@@ -112,7 +158,7 @@ void tampilan_input_awal(){
 	gotoxy(43,20);printf("\033[1;37m+----------------------+");
 	gotoxy(43,21);printf("|                      |");
 	gotoxy(43,22);printf("+----------------------+");
-	gotoxy(54,21);scanf("%d", &input1);
+	gotoxy(54,21);scanf("%d", &permainan.input_awal);getchar();
 }
 
 
@@ -143,17 +189,19 @@ void tampilan_playing(){
 	gotoxy(27,17); printf("10       01       10   01      10      01   01  1001   01   01");
 	gotoxy(27,18); printf("01       110100   00   11      01      10   10   001   1010101\033[0m");
 }
-	
-	
-void pilih_pemain(Pemain *pemain1, Pemain *pemain2){
+
+
+void pilih_pemain(){
+	do{
 	system("cls");
 	tampilan_tiktaktoe();
 	tampilan_1single();
 	tampilan_2multi();
 	tampilan_input_cara_bermain();
+	}while(permainan.penentu_player);
 }
 void tampilan_1single(){
-	gotoxy(31,8);printf("\033[1;32m11        100011  01  011   01  1000010  01      101010");//53
+	gotoxy(31,8);printf("\033[1;32m11        100011  01  011   01  1000010  01      101010");
 	gotoxy(31,9);printf("01        01      10  1010  10  01       01      10");
 	gotoxy(31,10);printf("00        000101  01  10 01 01  10  101  10      011010");
 	gotoxy(31,11);printf("01            10  00  01  1001  10   01  11      10");
@@ -170,16 +218,23 @@ void tampilan_input_cara_bermain(){
 	gotoxy(43,20);printf("+----------------------+");
 	gotoxy(43,21);printf("|                      |");
 	gotoxy(43,22);printf("+----------------------+");
-	gotoxy(54,21);scanf("%d", &input2);
+	gotoxy(54,21);scanf("%d", &permainan.input_cara_bermain);getchar();
+	if((permainan.input_cara_bermain == 1) || (permainan.input_cara_bermain == 2)){
+		permainan.penentu_player = false;
+	} else {
+		permainan.penentu_player = true;
+	}
 }
 
 
 void pilih_dimensi_papan(){
+	do{
 	system("cls");
 	tampilan_3x3();
 	tampilan_5x5();
 	tampilan_7x7();
 	tampilan_input_pilih_board();
+	}while(permainan.penentu_dimensi);
 }
 void tampilan_3x3(){
 	gotoxy(40,2);printf("\033[1;32m1010101      01   10      0101011");
@@ -189,14 +244,14 @@ void tampilan_3x3(){
 	gotoxy(35,6);printf("1101001      01   10      0101000\033[0m");
 }
 void tampilan_5x5(){
-	gotoxy(39,8);printf("\033[1;33m11010101      01   10     00101011");
+	gotoxy(39,8);printf("\033[0;33m11010101      01   10     00101011");
 	gotoxy(38,9);printf("110            10 01      110");
 	gotoxy(37,10);printf("00110101        011       01110101");
 	gotoxy(41,11);printf("010       10 01           101");
 	gotoxy(35,12);printf("11010001      01   10     10111000\033[0m");
 }
 void tampilan_7x7(){
-	gotoxy(39,14); printf("\033[1;31m11010101      01   10     10101011");
+	gotoxy(39,14); printf("\033[0;31m11010101      01   10     10101011");
 	gotoxy(43,15); printf("110       10 01           110");
 	gotoxy(42,16); printf("001        011            011");
 	gotoxy(41,17); printf("010       10 01           101");
@@ -208,51 +263,157 @@ void tampilan_input_pilih_board(){
 	gotoxy(43,20);printf("+----------------------+");
 	gotoxy(43,21);printf("|                      |");
 	gotoxy(43,22);printf("+----------------------+\033[0m");
-	gotoxy(54,21);scanf("%d", &input3);
-	getchar();
+	gotoxy(54,21);scanf("%d", &papan.ukuran);getchar();
+	if((papan.ukuran == 3) || (papan.ukuran == 5) || (papan.ukuran == 7)){
+		permainan.penentu_dimensi = false;
+	} else {
+		permainan.penentu_dimensi = true;
+	}
 }
 
 
 void tampilan_nickname(){
-	system("cls");
-	tampilan_tiktaktoe();
-	tampilan_input_nickname();
+	for(int i = 1; i <= permainan.input_cara_bermain; i++){
+		system("cls");
+		tampilan_tiktaktoe();
+		tampilan_input_nickname();
+		if(i == 1){
+			gotoxy(50,15);fgets(pemain1.nama,10, stdin);
+		}
+		if(i == 2){
+			gotoxy(50,15);fgets(pemain2.nama,10, stdin);
+		}
+	}
 }
 void tampilan_input_nickname(){
-	gotoxy(49,12);printf("\033[1;37mP L A Y E R %d", z);
+	gotoxy(49,12);printf("\033[1;37mP L A Y E R %d", permainan.jumlah_permain+1);
 	gotoxy(47,13);printf("N I C K N A M E ?");
 	gotoxy(43,14);printf("+----------------------+");
 	gotoxy(43,15);printf("|                      |");
 	gotoxy(43,16);printf("+----------------------+");
 	gotoxy(46,17);printf("M A X  1 0  C H A R\033[0m");
-	gotoxy(50,15);scanf("%c", &pemain1);fflush(stdin);
-	z++;
+	//gotoxy(50,15);fgets(pemain1.nama,10, stdin);
+	permainan.jumlah_permain++;
 }
 
 
-void game_board_permainan(){
+/*================================================================================================================*/
+void mulai_permainan(){
+	/*deklarasi*/
+	int ulangi;
+	permainan.stoptimer = false;
+	pemain1.simbol = 'X';
+	pemain2.simbol = 'O';
+	computer.simbol = 'O';
+	pemain1.score = 0;
+	pemain2.score = 0;
+	computer.score = 0;
+	pthread_t timer_1, timer_2;
+	/*Algoritma*/
+	do{
 	system("cls");
-	tampilan_papan();
+	cetak_papan();
+	hapus_papan();
+		while((winner = ' ') && (cek_papan_penuh())){
+			permainan.stoptimer = false;
+			pthread_create(&timer_1, NULL, *timer_pemain1, NULL);
+			pthread_join(&timer_1, NULL);
+			do{
+			game_board_permainan();
+			giliran_pemain(pemain1);
+			}while(permainan.invalid_move);
+			permainan.stoptimer = true;
+			winner = cek_menang();
+			if((winner != ' ') || cek_papan_penuh() == false){
+				game_board_permainan();
+				if(cek_papan_penuh() == false){
+					gotoxy(46,18);printf("G A M E  T I E !");
+				} else {
+					gotoxy(41,18); printf("W E  H A V E  W I N N E R !");
+				}
+				sleep(5);
+				break;
+			}
+			if(permainan.input_cara_bermain == 1){
+				giliran_computer(computer);
+				winner = cek_menang();
+				if((winner != ' ') || cek_papan_penuh() == false){
+					game_board_permainan();
+					if(cek_papan_penuh() == false){
+						gotoxy(46,18);printf("G A M E  T I E !");
+					} else {
+						gotoxy(41,18); printf("W E  H A V E  W I N N E R !");
+					}
+					sleep(5);
+					break;
+				}		
+			} else {	
+				permainan.stoptimer = false;
+				pthread_create(&timer_2, NULL, *timer_pemain2, NULL);
+				pthread_join(&timer_1, NULL);
+				do{
+				game_board_permainan();
+				giliran_pemain(pemain2);
+				}while(permainan.invalid_move);
+				permainan.stoptimer = true;
+				winner = cek_menang();
+				if((winner != ' ') || cek_papan_penuh() == false){
+					if(cek_papan_penuh() == false){
+						gotoxy(46,18);printf("G A M E  T I E !");
+					} else {
+						gotoxy(41,18); printf("W E  H A V E  W I N N E R !");
+					}
+					sleep(5);
+					break;
+				}
+			}
+		}
+	ulangi_permainan(winner);
+	}while(permainan.main_lagi == 1);
+	hitung_score();
+	keluar_permainan();
+	permainan.input_awal = 2;
+}
+/*================================================================================================================*/
+
+
+void hapus_papan(){
+	for (int i = 0; i < papan.ukuran; i++){
+		for(int j=0; j < papan.ukuran; j++){
+			papan.kotak[i][j] = ' ';
+		}
+	}
+}
+void game_board_permainan(){
+	//cetak_papan();
 	tampilan_color_X_O();
 	tampilan_player_biner();
 	tampilan_row_colums();
 	tampilan_nama_player();
 	tampilan_score();
 	tampilan_aksesoris_tiktaktoe();
+	if (permainan.invalid_move){
+		gotoxy(86,25);printf("Invalid Move!");
+	} else {
+		gotoxy(86,25);printf("             ");
+	}
 }
-void tampilan_papan(){
-	printf("\033[1;37m");
-	int l = 0;
+void cetak_papan(){
+	for(int i = 0; i < 7; i++){
+		for (int j = 0; j < 7; j++){
+			if((papan.kotak[i][j] != ' ') || (papan.kotak[i][j] != 'X') || (papan.kotak[i][j] != 'O')){
+			papan.kotak[i][j] = '0';
+			}
+		}
+	}
 	for (int i = 3; i <= 17; i++){
 		if (i % 2 == 1){
 			gotoxy(40,i);printf("+---+---+---+---+---+---+---+");
 		}
 		if (i % 2 == 0){
 			gotoxy(40,i);printf("|   |   |   |   |   |   |   |");
-			l++;
 		}
 	}
-	printf("\033[0m");
 }
 void tampilan_color_X_O(){
 	int a, b;
@@ -261,12 +422,12 @@ void tampilan_color_X_O(){
 		b = 0;
 		for (int j = 40; j <= 66; j++){
 			if ((i % 2 == 0) && (j % 4 == 2)){
-				if(A[a][b] == 'X'){
-				gotoxy(j,i);printf("\033[1;31m%c\033[0m", A[a][b]);
-				} else if (A[a][b] == 'O'){
-					gotoxy(j,i);printf("\033[1;32m%c\033[0m", A[a][b]);
+				if(papan.kotak[a][b] == 'X'){
+				gotoxy(j,i);printf("\033[0;31m%c\033[0m", papan.kotak[a][b]);
+				} else if (papan.kotak[a][b] == 'O'){
+					gotoxy(j,i);printf("\033[0;32m%c\033[0m", papan.kotak[a][b]);
 					} else {
-						gotoxy(j,i);printf("\033[1;30m%c\033[0m", A[a][b]);
+						gotoxy(j,i);printf("\033[1;30m%c\033[0m", papan.kotak[a][b]);
 					}
 			b++;
 			}
@@ -285,7 +446,7 @@ void tampilan_player_biner(){
 	gotoxy(14,11); printf("010100101010");
 	gotoxy(13,12); printf("10101010101001");	
 	gotoxy(13,13); printf("10101010101110");
-	if (input2 == 1){
+	if (permainan.input_cara_bermain == 1){
 		gotoxy(83,6); printf("\033[1;32m1000101110010101");
 		gotoxy(83,7);printf("10            01");
 		gotoxy(83,8);printf("00            01");
@@ -321,16 +482,20 @@ void tampilan_row_colums(){
 	}
 }
 void tampilan_nama_player(){
-	gotoxy(16,4); printf("\033[1;37mArnanda");
-	if (input2 == 1){
+	gotoxy(16,4); printf("\033[1;37m%s", pemain1.nama);
+	if (permainan.input_cara_bermain == 1){
 		gotoxy(84,4); printf("C O M P U T E R");	
 	} else {
-		gotoxy(86,4); printf("Bhisma");
+		gotoxy(86,4); printf("%s", pemain2.nama);
 	}
 }
 void tampilan_score(){
-	gotoxy(14,15); printf("S C O R E : 0");
-	gotoxy(84,15); printf("S C O R E : 0");
+	gotoxy(14,15); printf("S C O R E : %d", pemain1.score);
+	if (permainan.input_cara_bermain == 1){
+		gotoxy(84,15); printf("S C O R E : %d", computer.score);
+	} else {
+		gotoxy(84,15); printf("S C O R E : %d", pemain2.score);
+	}
 }
 void tampilan_aksesoris_tiktaktoe(){
 	gotoxy(8,20);
@@ -340,229 +505,169 @@ void tampilan_aksesoris_tiktaktoe(){
 	printf("       10   10 01          10   01    10 01          01   10   01 10             |COLUMS :            |\n");
 	printf("      01   01 101010      01   10    01 101010      10   0101010 010101          +--------------------+\n");
 }
-
-/*=====================================================================================================================
-void mulai_permainan(){
-
-}
-========================================================================================================================*/
-
-void giliran_pemain(Pemain pemain, Papan papan){
-    int baris;
-	int kolom;
-
-
-	do{	
-		printf("Enter row #(1-3): ");
-		scanf("%d", &baris);
-		baris--;
-		printf("Enter column #(1-3): ");
-		scanf("%d", &kolom);
-		kolom--;
-		
-		if (cek_tempat_kosong(papan, baris, kolom)){
-			papan.kotak[baris][kolom] = pemain.simbol;
-			break;
-		} else {
-			printf("Invalid Move!\n");
-		}
-	}while(papan.kotak[baris][kolom] != ' ');
-}
-void bot_mudah(){
-int baris, kolom;
-
-	do{
-	baris = rand() % Papan.ukuran;
-	kolom = rand() % Papan.ukuran;
-	if (cek_tempat_kosong(papan, baris, kolom)){
-			papan.kotak[baris][kolom] = pemain.simbol;
-			break;
-		} else {
-			printf("Invalid Move!\n");
-		}
-	}while(papan.kotak[baris][kolom] != ' ');
-}
-
-
-char cek_menang(){
-	char menang;
-    switch (Papan.ukuran){
-        case 3 : menang = cek_menang_3x3; 
-                 return menang;
-                 break;
-        case 5 : menang = cek_menang_5x5; 
-                 return menang;
-                 break;
-        case 7 : menang = cek_menang_7x7;
-                 return menang;
-                 break;
-    }
-}
-char cek_menang_3x3(Papan papan){
-	/*Check Row*/
-	for (int i = 0; i < 3; i++){
-		if((papan.kotak[i][0] == papan.kotak[i][1])&&(papan.kotak [i][0] == papan.kotak[i][2])){
-			return papan.kotak[i][0];
-		}
+void giliran_pemain(Pemain pemain){
+	permainan.invalid_move = false;
+	int baris, kolom;
+	gotoxy(91,19); 
+	if(pemain.simbol == 'X'){
+		printf("\033[0;31m%c\033[0m", pemain.simbol);
+	} else {
+		printf("\033[0;32m%c\033[0m", pemain.simbol);
 	}
-	/*Check Colums*/
-	for (int i = 0; i < 3; i++){
-		if((papan.kotak[0][i] == papan.kotak[1][i])&&(papan.kotak [0][i] == papan.kotak[2][i])){
-			return papan.kotak[0][i];
-		}
-	}
-	/*Check Diagonals*/
-	if((papan.kotak[0][0] == papan.kotak[1][1]) && (papan.kotak[0][0] == papan.kotak[2][2])){
-		return papan.kotak[0][0];
-	}
-	if((papan.kotak[0][2] == papan.kotak[1][1]) && (papan.kotak[0][2] == papan.kotak[2][0])){
-		return papan.kotak[0][2];
-	}
+	gotoxy(91,21);permainan.cursor = true;scanf("%d", &baris);
+	baris--;
+	gotoxy(91,23); permainan.cursor = false;
+	scanf("%d", &kolom);
+	kolom--;
+	getchar();
 	
-	return ' ';
+	if(cek_tempat_kosong(baris, kolom)){
+		papan.kotak[baris][kolom] = pemain.simbol;
+	} else {
+		permainan.invalid_move = true;
+	}
 }
-char cek_menang_5x5(Papan papan){
-    /*Cek Row */
-    for(int i = 0; i < 5; i++){
-        if((papan.kotak[i][0] == papan.kotak[i][1]) && (papan.kotak [i][1] == papan.kotak[i][2]) && (papan.kotak[i][2] == papan.kotak[i][3])){
-	   		return papan.kotak[i][0];
-    	}
-        if((papan.kotak[i][1] == papan.kotak[i][2]) && (papan.kotak [i][2] == papan.kotak[i][3]) && (papan.kotak[i][3] == papan.kotak[i][4])){
-             return papan.kotak[i][0];
-        }
-    }
-    /*Cek Colums*/
-	for (int i = 0; i < 5; i++){
-        if((papan.kotak[0][i] == papan.kotak[1][i]) && (papan.kotak [1][i] == papan.kotak[2][i]) && (papan.kotak[2][i] == papan.kotak[3][i])){
-			return papan.kotak[0][i];
-    	}
-        if((papan.kotak[1][i] == papan.kotak[2][i]) && (papan.kotak [2][i] == papan.kotak[3][i]) && (papan.kotak[3][i] == papan.kotak[4][i])){
-	    	return papan.kotak[1][i];
-        }
-    }
-    /*Cek Diagonals*/
-    if ((papan.kotak[0][0] == papan.kotak[1][1]) && (papan.kotak [1][1] == papan.kotak[2][2]) && (papan.kotak[2][2] == papan.kotak[3][3])){
-        return papan.kotak[0][0];
-    }
-    if ((papan.kotak[1][1] == papan.kotak[2][2]) && (papan.kotak [2][2] == papan.kotak[3][3]) && (papan.kotak[3][3] == papan.kotak[4][4])){
-        return papan.kotak[1][1];
-    }
-    if ((papan.kotak[0][1] == papan.kotak[1][2]) && (papan.kotak [1][2] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[3][4])){
-        return papan.kotak[0][1];
-    }
-    if ((papan.kotak[1][0] == papan.kotak[2][1]) && (papan.kotak [2][1] == papan.kotak[3][2]) && (papan.kotak[3][2] == papan.kotak[4][3])){
-        return papan.kotak[1][0];
-    }
-    if ((papan.kotak[3][0] == papan.kotak[2][1]) && (papan.kotak [2][1] == papan.kotak[1][2]) && (papan.kotak[1][2] == papan.kotak[3][0])){
-        return papan.kotak[3][0];
-    }
-    if ((papan.kotak[4][0] == papan.kotak[3][1]) && (papan.kotak [3][1] == papan.kotak[2][2]) && (papan.kotak[2][2] == papan.kotak[1][3])){
-        return papan.kotak[4][0];
-    }
-    if ((papan.kotak[3][1] == papan.kotak[2][2]) && (papan.kotak [2][2] == papan.kotak[1][3]) && (papan.kotak[1][3] == papan.kotak[0][4])){
-        return papan.kotak[3][1];
-    }
-    if ((papan.kotak[4][1] == papan.kotak[3][2]) && (papan.kotak [3][2] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[1][4])){
-        return papan.kotak[4][1];
-    }
-    
-    return ' ';
+void giliran_computer(Pemain pemain){
+	int baris, kolom;
+	do {
+		baris = rand() % papan.ukuran;
+		kolom = rand() % papan.ukuran;
+		if(cek_tempat_kosong(baris, kolom)){
+			papan.kotak[baris][kolom] = pemain.simbol;
+			break;
+		}
+	}while(papan.kotak[baris][kolom] != ' ');
 }
-char cek_menang_7x7(Papan papan){
-    /*Cek Row */
-    for(int i = 0; i < 7; i++){
-        if((papan.kotak[i][0] == papan.kotak[i][1]) && (papan.kotak [i][1] == papan.kotak[i][2]) && (papan.kotak[i][2] == papan.kotak[i][3]) && (papan.kotak[i][3] == papan.kotak[i][4])){
-	   		return papan.kotak[i][0];
-    	}
-        if((papan.kotak[i][1] == papan.kotak[i][2]) && (papan.kotak [i][2] == papan.kotak[i][3]) && (papan.kotak[i][3] == papan.kotak[i][4]) && (papan.kotak[i][4] == papan.kotak[i][5])){
-             return papan.kotak[i][1];
-        }
-        if((papan.kotak[i][2] == papan.kotak[i][3]) && (papan.kotak [i][3] == papan.kotak[i][4]) && (papan.kotak[i][4] == papan.kotak[i][5]) && (papan.kotak[i][5] == papan.kotak[i][6])){
-            return papan.kotak[i][2];
-        }
-    }
-    /*Cek Colums*/
-	for (int i = 0; i < 5; i++){
-        if((papan.kotak[0][i] == papan.kotak[1][i]) && (papan.kotak [1][i] == papan.kotak[2][i]) && (papan.kotak[2][i] == papan.kotak[3][i]) && (papan.kotak[3][i] == papan.kotak[4][i])){
-			return papan.kotak[0][i];
-    	}
-        if((papan.kotak[1][i] == papan.kotak[2][i]) && (papan.kotak [2][i] == papan.kotak[3][i]) && (papan.kotak[3][i] == papan.kotak[4][i]) && (papan.kotak[4][i] == papan.kotak[5][i])){
-	    	return papan.kotak[1][i];
-        }
-        if((papan.kotak[2][i] == papan.kotak[3][i]) && (papan.kotak [3][i] == papan.kotak[4][i]) && (papan.kotak[4][i] == papan.kotak[5][i]) && (papan.kotak[5][i] == papan.kotak[6][i])){
-	    	return papan.kotak[2][i];
-        }
-    }
-    /*Cek Diagonals \*/
-    if((papan.kotak[0][0] == papan.kotak[1][1]) && (papan.kotak [1][1] == papan.kotak[2][2]) && (papan.kotak[2][2] == papan.kotak[3][3]) && (papan.kotak[3][3] == papan.kotak[4][4])){
-        return papan.kotak[0][0];
-    }
-    if((papan.kotak[1][1] == papan.kotak[2][2]) && (papan.kotak [2][2] == papan.kotak[3][3]) && (papan.kotak[3][3] == papan.kotak[4][4]) && (papan.kotak[4][4] == papan.kotak[5][5])){
-        return papan.kotak[1][1];
-    }
-    if((papan.kotak[2][2] == papan.kotak[3][3]) && (papan.kotak [3][3] == papan.kotak[4][4]) && (papan.kotak[4][4] == papan.kotak[5][5]) && (papan.kotak[5][5] == papan.kotak[6][6])){
-        return papan.kotak[2][2];
-    }
-    if((papan.kotak[0][1] == papan.kotak[1][2]) && (papan.kotak [1][2] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[3][4]) && (papan.kotak[3][4] == papan.kotak[4][5])){
-        return papan.kotak[0][1];
-    }
-    if((papan.kotak[1][2] == papan.kotak[2][3]) && (papan.kotak [2][3] == papan.kotak[3][4]) && (papan.kotak[3][4] == papan.kotak[4][5]) && (papan.kotak[4][5] == papan.kotak[5][6])){
-        return papan.kotak[1][2];
-    }
-    if((papan.kotak[0][2] == papan.kotak[1][3]) && (papan.kotak [1][3] == papan.kotak[2][4]) && (papan.kotak[2][4] == papan.kotak[3][5]) && (papan.kotak[3][5] == papan.kotak[4][6])){
-        return papan.kotak[0][2];
-    }
-    if((papan.kotak[1][0] == papan.kotak[2][1]) && (papan.kotak [2][1] == papan.kotak[3][2]) && (papan.kotak[3][2] == papan.kotak[4][3]) && (papan.kotak[4][3] == papan.kotak[5][4])){
-        return papan.kotak[1][0];
-    }
-    if((papan.kotak[2][1] == papan.kotak[3][2]) && (papan.kotak [3][2] == papan.kotak[4][3]) && (papan.kotak[4][3] == papan.kotak[5][4]) && (papan.kotak[5][4] == papan.kotak[6][5])){
-        return papan.kotak[2][1];
-    }
-    if((papan.kotak[2][0] == papan.kotak[3][1]) && (papan.kotak [3][1] == papan.kotak[4][2]) && (papan.kotak[4][2] == papan.kotak[5][3]) && (papan.kotak[5][3] == papan.kotak[6][4])){
-        return papan.kotak[2][0];
-    }
-    /*Cek Diagona; /*/
-    if((papan.kotak[4][0] == papan.kotak[3][1]) && (papan.kotak [3][1] == papan.kotak[2][2]) && (papan.kotak[2][2] == papan.kotak[1][3]) && (papan.kotak[1][3] == papan.kotak[0][4])){
-        return papan.kotak[4][0];
-    }
-    if((papan.kotak[5][0] == papan.kotak[4][1]) && (papan.kotak [4][1] == papan.kotak[3][2]) && (papan.kotak[3][2] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[1][4])){
-        return papan.kotak[5][0];
-    }
-    if((papan.kotak[4][1] == papan.kotak[3][2]) && (papan.kotak [3][2] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[1][4]) && (papan.kotak[1][4] == papan.kotak[0][5])){
-        return papan.kotak[4][1];
-    }
-    if((papan.kotak[6][0] == papan.kotak[5][1]) && (papan.kotak [5][1] == papan.kotak[4][2]) && (papan.kotak[4][2] == papan.kotak[3][3]) && (papan.kotak[3][3] == papan.kotak[2][4])){
-        return papan.kotak[6][0];
-    }
-    if((papan.kotak[5][1] == papan.kotak[4][2]) && (papan.kotak [4][2] == papan.kotak[3][3]) && (papan.kotak[3][3] == papan.kotak[2][4]) && (papan.kotak[2][4] == papan.kotak[1][5])){
-        return papan.kotak[5][1];
-    }
-    if((papan.kotak[4][2] == papan.kotak[3][3]) && (papan.kotak [3][3] == papan.kotak[2][4]) && (papan.kotak[2][4] == papan.kotak[1][5]) && (papan.kotak[1][5] == papan.kotak[0][6])){
-        return papan.kotak[4][2];
-    }
-    if((papan.kotak[6][1] == papan.kotak[5][2]) && (papan.kotak [5][2] == papan.kotak[4][3]) && (papan.kotak[4][3] == papan.kotak[3][4]) && (papan.kotak[3][4] == papan.kotak[2][5])){
-        return papan.kotak[6][1];
-    }
-    if((papan.kotak[5][2] == papan.kotak[4][3]) && (papan.kotak [4][3] == papan.kotak[3][4]) && (papan.kotak[3][4] == papan.kotak[2][5]) && (papan.kotak[2][5] == papan.kotak[1][6])){
-        return papan.kotak[5][2];
-    }
-    if((papan.kotak[6][2] == papan.kotak[5][3]) && (papan.kotak [5][3] == papan.kotak[4][4]) && (papan.kotak[4][4] == papan.kotak[3][5]) && (papan.kotak[3][5] == papan.kotak[2][6])){
-        return papan.kotak[6][3];
-    }
-    
-    return ' ';
-}
-bool cek_tempat_kosong(Papan papan,int baris, int kolom){
+bool cek_tempat_kosong(int baris, int kolom){
 	if(papan.kotak[baris][kolom] == ' '){
 		return true;
 	}else{
 		return false;
 	}
 }
-bool cek_papan_penuh(Papan papan){
-	for (int i = 0; i < Papan.ukuran; i++){
-		for (int j = 0; j < Papan.ukuran; j++){
-			if (Papan.kotak[i][j] == ' '){
+char cek_menang(){
+	char menang;
+    switch (papan.ukuran){
+        case 3 : menang = cek_menang_3x3(); 
+                 return menang;
+                 break;
+        case 5 : menang = cek_menang_5x5(); 
+                 return menang;
+                 break;
+        case 7 : menang = cek_menang_7x7();
+                 return menang;
+                 break;
+    }
+}
+char cek_menang_3x3(){
+	/*Check Row*/
+	for (int i = 0; i < 3; i++){
+		if((papan.kotak[i][1] != ' ') && (papan.kotak[i][0] == papan.kotak[i][1])&&(papan.kotak[i][1] == papan.kotak[i][2])){
+			return papan.kotak[i][0];
+		}
+	}
+	/*Check Colums*/
+	for (int i = 0; i < 3; i++){
+		if((papan.kotak[1][i] != ' ') && (papan.kotak[0][i] == papan.kotak[1][i])&&(papan.kotak[1][i] == papan.kotak[2][i])){
+			return papan.kotak[0][i];
+		}
+	}
+	/*Check Diagonals*/
+	if((papan.kotak[1][1] != ' ') && (papan.kotak[0][0] == papan.kotak[1][1]) && (papan.kotak[1][1] == papan.kotak[2][2])){
+		return papan.kotak[0][0];
+	}
+	if((papan.kotak[1][1] != ' ') && (papan.kotak[0][2] == papan.kotak[1][1]) && (papan.kotak[1][1] == papan.kotak[2][0])){
+		return papan.kotak[0][2];
+	}
+	return ' ';
+}
+char cek_menang_5x5(){
+    /*Cek Row */
+    for(int i = 0; i < 5; i++){
+        if(((papan.kotak[i][0] == papan.kotak[i][2]) || (papan.kotak[i][4] == papan.kotak[i][2])) && (((papan.kotak[i][1] == papan.kotak[i][2]) && (papan.kotak[i][2] == papan.kotak[i][3])) && (papan.kotak[i][2] != ' '))){
+        	return papan.kotak[i][2];
+		}
+    }
+    /*Cek Colums*/
+	for (int i = 0; i < 5; i++){
+        if(((papan.kotak[0][i] == papan.kotak[2][i]) || (papan.kotak[4][i] == papan.kotak[2][i])) && (((papan.kotak[1][i] == papan.kotak[2][i]) && (papan.kotak[2][i] == papan.kotak[3][i])) && (papan.kotak[2][i] != ' '))){
+			return papan.kotak[2][i];
+    	}
+	}
+    /*Cek Diagonals\*/
+    if((papan.kotak[1][0] != ' ') && (((papan.kotak[1][0] == papan.kotak[2][1]) && (papan.kotak[2][1] == papan.kotak[3][2])) && ((papan.kotak[3][2] == papan.kotak[4][3])) && (papan.kotak[4][3] == papan.kotak[1][0]))){
+    	return papan.kotak[1][0];
+	}
+	if((papan.kotak[0][1] != ' ') && (((papan.kotak[0][1] == papan.kotak[1][2]) && (papan.kotak[1][2] == papan.kotak[2][3])) && ((papan.kotak[2][3] == papan.kotak[3][4])) && (papan.kotak[3][4] == papan.kotak[0][1]))){
+    	return papan.kotak[0][1];
+	}
+	if((papan.kotak[2][2] != ' ') && (((papan.kotak[0][0] == papan.kotak [2][2]) || (papan.kotak[4][4] == papan.kotak [2][2])) && (((papan.kotak[1][1] == papan.kotak [2][2]) && (papan.kotak[2][2] == papan.kotak [3][3])) && (papan.kotak[3][3] == papan.kotak [1][1])))){
+		return papan.kotak[2][2];
+	}
+	/*Cek Diagonals/*/
+	if((papan.kotak[0][3] != ' ') && (((papan.kotak[0][3] == papan.kotak[1][2]) && (papan.kotak[1][2] == papan.kotak[2][1])) && ((papan.kotak[2][1] == papan.kotak[3][0]) && (papan.kotak[3][0] == papan.kotak[0][3])))){
+    	return papan.kotak[0][3];
+	}
+	if((papan.kotak[1][4] != ' ') && (((papan.kotak[1][4] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[3][2])) && ((papan.kotak[3][2] == papan.kotak[4][1])) && (papan.kotak[4][1] == papan.kotak[1][4]))){
+    	return papan.kotak[1][4];
+	}
+	if((papan.kotak[2][2] != ' ') && (((papan.kotak[0][4] == papan.kotak [2][2]) || (papan.kotak[4][0] == papan.kotak [2][2])) && (((papan.kotak[1][3] == papan.kotak [2][2]) && (papan.kotak[2][2] == papan.kotak [3][1])) && (papan.kotak[3][1] == papan.kotak [1][3])))){
+		return papan.kotak[2][2];
+	}
+    return ' ';
+}
+char cek_menang_7x7(){
+    /*Cek Row */
+    for (int i = 0; i < 7; i++){
+    	if((papan.kotak[i][3] != ' ') && ((papan.kotak[i][6] == papan.kotak[i][5]) && (papan.kotak[i][5] == papan.kotak[i][3]) || (papan.kotak[i][5] == papan.kotak[i][1]) && (papan.kotak[i][1] == papan.kotak[i][3]) || (papan.kotak[i][0] == papan.kotak[i][1]) && (papan.kotak[i][1] == papan.kotak[i][3])) && (papan.kotak[i][2] == papan.kotak[i][3]) && (papan.kotak[i][3] == papan.kotak[i][4]) && (papan.kotak[i][4] == papan.kotak[i][2])){
+    		return papan.kotak[i][3];
+		}
+	}
+    /*Cek Diagonal\*/
+	for (int i = 0; i < 7; i++){
+    	if((papan.kotak[3][i] != ' ') && ((papan.kotak[6][i] == papan.kotak[5][i]) && (papan.kotak[5][i] == papan.kotak[3][i]) || (papan.kotak[5][i] == papan.kotak[1][i]) && (papan.kotak[1][i] == papan.kotak[3][i]) || (papan.kotak[0][i] == papan.kotak[1][i]) && (papan.kotak[1][i] == papan.kotak[3][i])) && (papan.kotak[2][i] == papan.kotak[3][i]) && (papan.kotak[3][i] == papan.kotak[4][i]) && (papan.kotak[4][i] == papan.kotak[2][i])){
+    		return papan.kotak[3][i];
+		}
+	}
+	/*Cek Diagonal/*/
+	if((papan.kotak[4][2] != ' ') && (papan.kotak[2][0] == papan.kotak[3][1]) && (papan.kotak[3][1] == papan.kotak[4][2]) && (papan.kotak[4][2] == papan.kotak[5][3]) && (papan.kotak[5][3] == papan.kotak[6][4]) && (papan.kotak[6][4] == papan.kotak[2][0])){
+		return papan.kotak[4][2];
+	}
+	if((papan.kotak[3][2] != ' ') && ((papan.kotak[1][0] == papan.kotak[3][2]) || (papan.kotak[6][5] == papan.kotak[3][2])) && ((papan.kotak[2][1] == papan.kotak[3][2]) && (papan.kotak[3][2] == papan.kotak[4][3]) && (papan.kotak[4][3] == papan.kotak[5][4]) && (papan.kotak[5][4] == papan.kotak[2][1]))){
+		return papan.kotak[3][2];
+	}
+	if ((papan.kotak[3][3] != ' ') && (((papan.kotak[0][0] == papan.kotak[1][1]) && (papan.kotak[0][0] == papan.kotak[3][3])) || ((papan.kotak[1][1] == papan.kotak[5][5]) && (papan.kotak[5][5] == papan.kotak[3][3])) || ((papan.kotak[5][5] == papan.kotak[6][6]) && (papan.kotak[6][6] == papan.kotak[3][3]))) && (papan.kotak[2][2] == papan.kotak[3][3]) && (papan.kotak[3][3] == papan.kotak[4][4]) && (papan.kotak[4][4] == papan.kotak[2][2])){
+		return papan.kotak[3][3];
+	}
+	if((papan.kotak[2][3] != ' ') && ((papan.kotak[0][1] == papan.kotak[2][3]) || (papan.kotak[5][6] == papan.kotak[2][3])) && ((papan.kotak[1][2] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[3][4]) && (papan.kotak[3][4] == papan.kotak[4][5]) && (papan.kotak[4][5] == papan.kotak[1][2]))){
+		return papan.kotak[2][3];
+	}
+	if((papan.kotak[2][4] != ' ') && (papan.kotak[0][2] == papan.kotak[1][3]) && (papan.kotak[1][3] == papan.kotak[2][4]) && (papan.kotak[2][4] == papan.kotak[3][5]) && (papan.kotak[3][5] == papan.kotak[4][6]) && (papan.kotak[4][6] == papan.kotak[0][2])){
+		return papan.kotak[2][4];
+	}
+	/*Cek Diagonal.*/
+	if((papan.kotak[2][2] != ' ') && (papan.kotak[4][0] == papan.kotak[3][1]) && (papan.kotak[3][1] == papan.kotak[2][2]) && (papan.kotak[2][2] == papan.kotak[1][3]) && (papan.kotak[1][3] == papan.kotak[0][4]) && (papan.kotak[0][4] == papan.kotak[4][0])){
+		return papan.kotak[2][2];
+	}
+	if((papan.kotak[3][2] != ' ') && ((papan.kotak[5][0] == papan.kotak[3][2]) || (papan.kotak[0][5] == papan.kotak[3][2])) && ((papan.kotak[4][1] == papan.kotak[3][2]) && (papan.kotak[3][2] == papan.kotak[2][3]) && (papan.kotak[2][3] == papan.kotak[1][4]) && (papan.kotak[1][4] == papan.kotak[4][1]))){
+		return papan.kotak[3][2];
+	}
+	if ((papan.kotak[3][3] != ' ') && (((papan.kotak[6][0] == papan.kotak[5][1]) && (papan.kotak[6][0] == papan.kotak[3][3])) || ((papan.kotak[5][1] == papan.kotak[1][5]) && (papan.kotak[5][1] == papan.kotak[3][3])) || ((papan.kotak[1][5] == papan.kotak[0][6]) && (papan.kotak[0][6] == papan.kotak[3][3]))) && (papan.kotak[4][2] == papan.kotak[3][3]) && (papan.kotak[3][3] == papan.kotak[2][4]) && (papan.kotak[2][4] == papan.kotak[4][2])){
+		return papan.kotak[3][3];
+	}
+	if((papan.kotak[4][3] != ' ') && ((papan.kotak[6][1] == papan.kotak[4][3]) || (papan.kotak[1][6] == papan.kotak[4][3])) && ((papan.kotak[5][2] == papan.kotak[4][3]) && (papan.kotak[4][3] == papan.kotak[3][4]) && (papan.kotak[3][4] == papan.kotak[2][5]) && (papan.kotak[2][5] == papan.kotak[5][2]))){
+		return papan.kotak[4][3];
+	}
+	if((papan.kotak[4][4] != ' ') && (papan.kotak[6][2] == papan.kotak[5][3]) && (papan.kotak[5][3] == papan.kotak[4][4]) && (papan.kotak[4][4] == papan.kotak[3][5]) && (papan.kotak[3][5] == papan.kotak[2][6]) && (papan.kotak[2][6] == papan.kotak[6][2])){
+		return papan.kotak[4][4];
+	}
+	
+    return ' ';
+}
+bool cek_papan_penuh(){
+	for(int i = 0; i < papan.ukuran; i++){
+		for (int j = 0; j < papan.ukuran; j++){
+			if(papan.kotak[i][j] == ' '){
 				return true;
 			}
 		}
@@ -571,21 +676,32 @@ bool cek_papan_penuh(Papan papan){
 }
 
 
-int ulangi_permainan(){
-    	system("cls");
-	if (input4 == 1){
-		tampilan_wins();
+void ulangi_permainan(char winner){
+	do{
+	system("cls");
+	if(winner == 'X'){
+		tampilan_wins(pemain1.nama);
 		tampilan_champion();
-		tampilan_input_main_lagi();
-	} else {
-		tampilan_tie();
-		tampilan_good();
-		tampilan_input_main_lagi();
-	}
+		pemain1.score++;	
+	} else if (winner == 'O'){
+		if(permainan.input_cara_bermain == 1){
+			tampilan_wins(pemain1.nama);
+			gotoxy(31,7);printf("C O M P U T E R");
+			computer.score++;
+		}
+			tampilan_wins(pemain2.nama);
+			tampilan_champion();
+			pemain2.score++;
+		} else {
+			tampilan_tie();
+			tampilan_good();
+		}
+	tampilan_input_main_lagi();
+	}while(permainan.penentu_main_lagi);
 }
-void tampilan_wins(){
-	gotoxy(31,7); printf("NAMA PLAYER");
-	gotoxy(19,9); printf("00     11  10  101   01  01 101001");//62
+void tampilan_wins(Pemain player){
+	gotoxy(31,7); printf("%s", player.nama);
+	gotoxy(19,9); printf("\033[1;37m00     11  10  101   01  01 101001");
 	gotoxy(19,10); printf("10     00  11  0001  11   0 01");
 	gotoxy(19,11); printf("01 100 10  00  11 01 01     101111");
 	gotoxy(19,12); printf("1010 1011  10  00  1010         01");
@@ -596,10 +712,10 @@ void tampilan_tie(){
 	gotoxy(15,10); printf("11    00    1  01           10    10  10");
 	gotoxy(15,11); printf("11    11       111011       01    11  011101");
 	gotoxy(15,12); printf("00    01           00       00    11  01");
-	gotoxy(15,13); printf("01    00       101011       11    01  100001");
+	gotoxy(15,13); printf("01    00       101011       11    01  100001\033[0m");
 }
 void tampilan_champion(){
-	gotoxy(61,3); printf(" 1010                          0110 ");
+	gotoxy(61,3); printf("\033[0;33m 1010                          0110 ");
 	gotoxy(61,4); printf("10  0110101010101010100000100100  11");
 	gotoxy(61,5); printf("00   01010010101010010111001001   11");
 	gotoxy(61,6); printf(" 111 01010100101001101010100101 101 ");
@@ -614,7 +730,7 @@ void tampilan_champion(){
 	gotoxy(61,15); printf("          00111011010001            ");
 	gotoxy(61,16); printf("       101011110010101001001        ");
 	gotoxy(61,17); printf("       001001010100010111101        ");
-	gotoxy(61,18); printf("    10101110001010110111000100      ");
+	gotoxy(61,18); printf("    10101110001010110111000100\033[0m");
 }
 void tampilan_good(){
 	gotoxy(65,3); printf("             00011                  ");
@@ -634,24 +750,68 @@ void tampilan_good(){
 	gotoxy(65,17); printf("        1010100001100001001011      ");
 	gotoxy(65,18); printf("            101010010000010         ");
 }
-int tampilan_input_main_lagi(){
+void tampilan_input_main_lagi(){
 	gotoxy(23,16); printf("1. Y A");
 	gotoxy(23,17); printf("2. T I D A K");
-	gotoxy(23,15); printf("M A I N  L A G I ? ");scanf("%d", &main_lagi);
-	return main_lagi;
-}
-
-
-void hapus_papan(Papan *papan){
-	for (int i=0; i < papan->ukuran; i++){
-		for(int j=0; i < papan->ukuran; j++){
-			papan->kotak[i][j] = ' ';
-		}
+	gotoxy(23,15); printf("M A I N  L A G I ? ");scanf("%d", &permainan.main_lagi);getchar();
+	if((permainan.main_lagi == 1) || (permainan.main_lagi == 2)){
+		permainan.penentu_main_lagi = false;
+	} else {
+		permainan.penentu_main_lagi = true;
 	}
 }
 
 
-void simpan_skor(){
+void hitung_score(){
+	system("cls");
+	tampilan_champion();
+	int j = 1;
+	gotoxy(13,2); printf(" N O       N I C K N A M E       S C O R E");
+	for (int i = 3; i < 24; i++){
+		if (i % 2 == 1){
+			gotoxy(13,i); printf("+-----+-------------------------+----------+");
+		} else if (j < 10){
+			gotoxy(13,i); printf("| %d.  |                         |          |", j);
+			j++;
+		} else {
+			gotoxy(13,i); printf("| %d. |                         |          |", j);
+		}
+	}
+	sleep(10);
+}
+
+
+void *timer_pemain1(){
+	for(Timer.second = 10;Timer.second >= 0;Timer.second--){
+		sleep(1);
+		gotoxy(51,19);printf("00:%.2d",Timer.second);
+		//Timer.second--;
+		if (permainan.cursor == true){
+			gotoxy(91,21);
+		} else {
+			gotoxy(91,23);
+		}
+		if(permainan.stoptimer == true){
+			break;
+		}
+	}
+	return NULL;
+}
+void *timer_pemain2(){
+	for(Timer.second = 10;Timer.second >= 0;Timer.second--){
+		sleep(1);
+		gotoxy(51,19);printf("00:%.2d",Timer.second);
+		//Timer.second--;
+		if (permainan.cursor == true){
+			gotoxy(91,21);
+		} else {
+			gotoxy(91,23);
+		}
+		if(permainan.stoptimer == true){
+			break;
+		}
+	}
+	return NULL;
 }
 
 
