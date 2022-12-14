@@ -93,6 +93,7 @@ void ulangi_permainan(char winner);//prosedur ini berfungsi untuk mengulangi per
 	void tampilan_good();//prosedur ini untuk mencetak tampilan dari emotikon memberikan jemput dengan arti goodjob
 	void tampilan_input_main_lagi();//prosedur ini untuk mencetak dan membaca masukan dari player apakah ingin bermain lagi atau tidak
 	void masukkan_score_baru (Pemain pemain_baru); //prosedur ini untuk memasukkan score pemain setelah selesai bermain ke dalam file
+	void tukar_posisi_pemain(Pemain *pemain1, Pemain *pemain2); //prosedur ini untuk menukar isi dua tipe data Pemain
 	void tampilkan_highscore();//prosedur ini untuk mencetak tampilan dari high score yang pernah bermain
 
 void *timer_pemain1();//prosedur ini untuk mencetak tampilan dari timer untuk pemain 1
@@ -774,12 +775,34 @@ void tampilkan_highscore(){
 	system("cls");
 	tampilan_champion();
 	int j = 1;
+	
+	Pemain data_file[10];
+	FILE *fp;
+	int total=0,banyak_data;
+	int posisi=0;
+	int kesamaan_nama;
+	bool pernah_bermain = false;
+	char ch = 0; 
+ 
+	fp=fopen("HighScore.txt","r");
+		while(ch!=EOF && total < 10){
+			fscanf(fp,"%s%d",&data_file[total].nama,&data_file[total].score);  
+			ch=fgetc(fp);
+			total++;  
+		}
+	fclose(fp);
+	total--;
+	
 	gotoxy(13,2); printf(" N O       N I C K N A M E       S C O R E");
 	for (int i = 3; i < 24; i++){
 		if (i % 2 == 1){
 			gotoxy(13,i); printf("+-----+-------------------------+----------+");
 		} else if (j < 10){
 			gotoxy(13,i); printf("| %d.  |                         |          |", j);
+				if(j-1<total){
+					gotoxy(22,i); printf("%s", data_file[j-1].nama);
+					gotoxy(50,i); printf("%d", data_file[j-1].score);
+				}
 			j++;
 		} else {
 			gotoxy(13,i); printf("| %d. |                         |          |", j);
@@ -790,7 +813,6 @@ void tampilkan_highscore(){
 
 void masukkan_score_baru (Pemain pemain_baru){
 	Pemain data_file[100];
-	Pemain temp;
 	FILE *fp;
 	int i=0,banyak_data=0;
 	int posisi=0;
@@ -825,9 +847,7 @@ void masukkan_score_baru (Pemain pemain_baru){
 	
 	for (i=posisi; i>0; i--){
 		if (data_file[i].score > data_file[i-1].score){
-		temp=data_file[i];
-		data_file[i]=data_file[i-1];
-		data_file[i-1]=temp;
+			tukar_posisi_pemain(&data_file[i], &data_file[i-1]);
 		}
 	}
 	
@@ -838,6 +858,13 @@ void masukkan_score_baru (Pemain pemain_baru){
 		i++;
 	}while(i<banyak_data);
 	fclose(fp);
+}
+
+void tukar_posisi_pemain(Pemain *pemain1, Pemain *pemain2){
+	Pemain temp;
+	temp = *pemain1;
+	*pemain1 = *pemain2;
+	*pemain2 = temp;
 }
 
 void *timer_pemain1(){
