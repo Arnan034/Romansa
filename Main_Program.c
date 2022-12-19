@@ -29,7 +29,8 @@ typedef struct{
 	bool penentu_dimensi;
 	bool penentu_main_lagi;
 	bool cursor;
-	bool stoptimer;
+	bool stoptimer1;
+	bool stoptimer2;
 }Permainan;
 
 typedef struct{
@@ -66,8 +67,7 @@ void mulai_permainan();//prosedur mulai permaian prosedur adalah sebuah eksekusi
 	void game_board_permainan();//prosedur ini berfungsi untuk mencetak alur permaianan dan desain dari sebuah permainan
 		void cetak_papan();//prosedur ini untuk mencetak tampilan dari papan game.
 		void tampilan_color_X_O();//prosedur ini sebagai tampilan warna dalam papannya apabila X maka berwarna merah dan apabila O maka berwarna hijau
-		void tampilan_player_biner();//prosedur ini untuk mencetak tampilan dari emotikon dari orang atau computer yang didesain menggunakan angka 0 dan 1
-		void tampilan_row_colums();//prosedur ini untuk mencetak tampilan dari baris dan kolom sebagai petunjuk baris dan kolom
+		void tampilan_player_biner();//prosedur ini untuk mencetak tampilan dari emotikon dari orang atau computer yang didesain menggunakan angka 0 dan 1		void tampilan_row_colums();//prosedur ini untuk mencetak tampilan dari baris dan kolom sebagai petunjuk baris dan kolom
 		void tampilan_nama_player();//prosedur ini untuk mencetak tampilan dari nama player yang sebelumnya diinputkan
 		void tampilan_score();//prosedur ini untuk mencetak tampilan dari score dari pemain
 		void tampilan_aksesoris_tiktaktoe();//prosedur ini untuk mencetak tampilan dari teks tik tak toe
@@ -349,7 +349,6 @@ void tampilan_input_nickname(){
 void mulai_permainan(){
 	/*deklarasi*/
 	int ulangi;
-	permainan.stoptimer = false;
 	pemain1.simbol = 'X';
 	pemain2.simbol = 'O';
 	computer.simbol = 'O';
@@ -364,14 +363,14 @@ void mulai_permainan(){
 	cetak_papan();
 	hapus_papan();
 		while((winner = ' ') && (cek_papan_penuh())){
-			permainan.stoptimer = false;
+			permainan.stoptimer1 = false;
 			pthread_create(&timer_1, NULL, *timer_pemain1, NULL);
 			pthread_join(&timer_1, NULL);
 			do{
 			game_board_permainan();
 			giliran_pemain(pemain1);
 			}while(permainan.invalid_move);
-			permainan.stoptimer = true;
+			permainan.stoptimer1 = true;
 			winner = cek_menang();
 			if((winner != ' ') || cek_papan_penuh() == false){
 				game_board_permainan();
@@ -397,14 +396,14 @@ void mulai_permainan(){
 					break;
 				}		
 			} else {	
-				permainan.stoptimer = false;
+				permainan.stoptimer2 = false;
 				pthread_create(&timer_2, NULL, *timer_pemain2, NULL);
-				pthread_join(&timer_1, NULL);
+				pthread_join(&timer_2, NULL);
 				do{
 				game_board_permainan();
 				giliran_pemain(pemain2);
 				}while(permainan.invalid_move);
-				permainan.stoptimer = true;
+				permainan.stoptimer2 = true;
 				winner = cek_menang();
 				if((winner != ' ') || cek_papan_penuh() == false){
 					if(cek_papan_penuh() == false){
@@ -420,7 +419,7 @@ void mulai_permainan(){
 	ulangi_permainan(winner);
 	}while(permainan.main_lagi == 1);
 	if(pemain1.score!=0){
-	masukkan_score_baru (pemain1);;
+	masukkan_score_baru (pemain1);
 	}
 	if(pemain2.score!=0){
 	masukkan_score_baru (pemain2);
@@ -441,12 +440,12 @@ void game_board_permainan(){
 	//cetak_papan();
 	tampilan_color_X_O();
 	tampilan_player_biner();
-	tampilan_row_colums();
 	tampilan_nama_player();
 	tampilan_score();
 	tampilan_aksesoris_tiktaktoe();
 }
 void cetak_papan(){
+	int l;
 	for(int i = 0; i < 7; i++){
 		for (int j = 0; j < 7; j++){
 			if((papan.kotak[i][j] != ' ') || (papan.kotak[i][j] != 'X') || (papan.kotak[i][j] != 'O')){
@@ -454,35 +453,138 @@ void cetak_papan(){
 			}
 		}
 	}
-	for (int i = 3; i <= 17; i++){
-		if (i % 2 == 1){
-			gotoxy(40,i);printf("+---+---+---+---+---+---+---+");
-		}
-		if (i % 2 == 0){
-			gotoxy(40,i);printf("|   |   |   |   |   |   |   |");
-		}
+	switch (papan.ukuran){
+		case 3 :/*Cetak papan 3 x 3*/
+				for (int i = 7; i <= 13; i++){
+					if (i % 2 == 1){
+						gotoxy(48,i);printf("+---+---+---+");
+					}
+					if (i % 2 == 0){
+						gotoxy(48,i);printf("|   |   |   |");
+					}
+				}
+				l = 1;
+				printf("\033[1;31m");
+				gotoxy(49,5); printf("C O L U M S");
+				gotoxy(49,6); printf(" 1   2   3");
+				gotoxy(44,8); printf("R");
+				gotoxy(44,10); printf("O");
+				gotoxy(44,12); printf("W");
+				for (int i = 7; i <= 13;i++){
+					if(i % 2 == 0){
+						gotoxy(46,i);printf("%d", l);
+					l++;
+					}
+				}break;
+		case 5 : /*Cetak papan 5 x 5*/
+				for (int i = 5; i <= 15; i++){
+					if (i % 2 == 1){
+						gotoxy(44,i);printf("+---+---+---+---+---+");
+					}
+					if (i % 2 == 0){
+						gotoxy(44,i);printf("|   |   |   |   |   |");
+					}
+				}
+				l = 1;
+				printf("\033[1;31m");
+				gotoxy(49,3); printf("C O L U M S");
+				gotoxy(45,4); printf(" 1   2   3   4   5");
+				gotoxy(40,8); printf("R");
+				gotoxy(40,10); printf("O");
+				gotoxy(40,12); printf("W");
+				for (int i = 5; i <= 15;i++){
+					if(i % 2 == 0){
+						gotoxy(42,i);printf("%d", l);
+					l++;
+					}
+				}break;
+		case 7 : /*Cetak papan 7 x 7*/
+				for (int i = 3; i <= 17; i++){
+					if (i % 2 == 1){
+						gotoxy(40,i);printf("+---+---+---+---+---+---+---+");
+					}
+					if (i % 2 == 0){
+						gotoxy(40,i);printf("|   |   |   |   |   |   |   |");
+					}
+				}
+				int l = 1;
+				printf("\033[1;31m");
+				gotoxy(49,1); printf("C O L U M S");
+				gotoxy(41,2); printf(" 1   2   3   4   5   6   7");
+				gotoxy(36,8); printf("R");
+				gotoxy(36,10); printf("O");
+				gotoxy(36,12); printf("W");
+				for (int i = 3; i <= 17;i++){
+					if(i % 2 == 0){
+						gotoxy(38,i);printf("%d", l);
+					l++;
+					}
+				}break;
 	}
 }
 void tampilan_color_X_O(){
 	int a, b;
-	a = 0;
-	for (int i = 3; i <= 17;i++){
-		b = 0;
-		for (int j = 40; j <= 66; j++){
-			if ((i % 2 == 0) && (j % 4 == 2)){
-				if(papan.kotak[a][b] == 'X'){
-				gotoxy(j,i);printf("\033[0;31m%c\033[0m", papan.kotak[a][b]);
-				} else if (papan.kotak[a][b] == 'O'){
-					gotoxy(j,i);printf("\033[0;32m%c\033[0m", papan.kotak[a][b]);
-					} else {
-						gotoxy(j,i);printf("\033[1;30m%c\033[0m", papan.kotak[a][b]);
+	switch (papan.ukuran){
+		case 3 : /*warna X dan O untuk papan 3 x 3*/
+				a = 0;
+				for (int i = 7; i <= 13; i++){
+					b = 0;
+					for (int j = 48; j <= 58; j++){
+						if ((i % 2 == 0) && (j % 4 == 2)){
+							if(papan.kotak[a][b] == 'X'){
+								gotoxy(j,i);printf("\033[0;31m%c\033[0m", papan.kotak[a][b]);
+							} else if (papan.kotak[a][b] == 'O'){
+									gotoxy(j,i);printf("\033[0;32m%c\033[0m", papan.kotak[a][b]);
+								} else {
+									gotoxy(j,i);printf("\033[1;30m%c\033[0m", papan.kotak[a][b]);
+								}
+							b++;
+							}
 					}
-			b++;
-			}
-		}
-		if (i % 2 == 0){
-		a++;
-		}
+					if (i % 2 == 0){
+					a++;
+					}	
+				}break;
+		case 5 : /*warna X dan O untuk papan 5 x 5*/
+				a = 0;
+				for (int i = 5; i <= 15; i++){
+					b = 0;
+					for (int j = 44; j <= 64; j++){
+						if ((i % 2 == 0) && (j % 4 == 2)){
+							if(papan.kotak[a][b] == 'X'){
+								gotoxy(j,i);printf("\033[0;31m%c\033[0m", papan.kotak[a][b]);
+							} else if (papan.kotak[a][b] == 'O'){
+									gotoxy(j,i);printf("\033[0;32m%c\033[0m", papan.kotak[a][b]);
+								} else {
+									gotoxy(j,i);printf("\033[1;30m%c\033[0m", papan.kotak[a][b]);
+								}
+							b++;
+							}
+					}
+					if (i % 2 == 0){
+					a++;
+					}	
+				}break;
+		case 7 : /*warna X dan O untuk papan 7 x 7*/
+				a = 0;
+				for (int i = 3; i <= 17;i++){
+					b = 0;
+					for (int j = 40; j <= 66; j++){
+						if ((i % 2 == 0) && (j % 4 == 2)){
+							if(papan.kotak[a][b] == 'X'){
+								gotoxy(j,i);printf("\033[0;31m%c\033[0m", papan.kotak[a][b]);
+							} else if (papan.kotak[a][b] == 'O'){
+									gotoxy(j,i);printf("\033[0;32m%c\033[0m", papan.kotak[a][b]);
+								} else {
+									gotoxy(j,i);printf("\033[1;30m%c\033[0m", papan.kotak[a][b]);
+								}
+							b++;
+							}
+					}
+					if (i % 2 == 0){
+					a++;
+					}
+				}break;
 	}
 }
 void tampilan_player_biner(){
@@ -512,21 +614,6 @@ void tampilan_player_biner(){
 	gotoxy(84,11); printf("010100101010");
 	gotoxy(83,12); printf("10101010101001");	
 	gotoxy(83,13); printf("10101010101110");
-	}
-}
-void tampilan_row_colums(){
-	int l = 1;
-	printf("\033[1;31m");
-	gotoxy(49,1); printf("C O L U M S");
-	gotoxy(41,2); printf(" 1   2   3   4   5   6   7");
-	gotoxy(36,8); printf("R");
-	gotoxy(36,10); printf("O");
-	gotoxy(36,12); printf("W");
-	for (int i = 3; i <= 17;i++){
-		if(i % 2 == 0){
-			gotoxy(38,i);printf("%d", l);
-			l++;
-		}
 	}
 }
 void tampilan_nama_player(){
@@ -602,7 +689,8 @@ bool cek_tempat_kosong(int baris, int kolom){
 }
 char cek_menang(){
     switch (papan.ukuran){
-        case 3 : /*Check Row*/
+        case 3 : /*Cek Winner 3 x 3*/ 
+				/*Check Row*/
 				for (int i = 0; i < 3; i++){
 					if((papan.kotak[i][1] != ' ') && (papan.kotak[i][0] == papan.kotak[i][1])&&(papan.kotak[i][1] == papan.kotak[i][2])){
 						return papan.kotak[i][0];break;
@@ -622,7 +710,8 @@ char cek_menang(){
 					return papan.kotak[0][2];break;
 				}
 				return ' '; break;
-        case 5 : /*Cek Row */
+        case 5 : /*Cek Winner 5 x 5*/ 
+				/*Cek Row */
     			for(int i = 0; i < 5; i++){
        				if(((papan.kotak[i][0] == papan.kotak[i][2]) || (papan.kotak[i][4] == papan.kotak[i][2])) && (((papan.kotak[i][1] == papan.kotak[i][2]) && (papan.kotak[i][2] == papan.kotak[i][3])) && (papan.kotak[i][2] != ' '))){
         				return papan.kotak[i][2];break;
@@ -655,7 +744,8 @@ char cek_menang(){
 					return papan.kotak[2][2];break;
 				}
     			return ' ';break;
-        case 7 :    /*Cek Row */
+        case 7 :/*Cek Winner 7 x 7*/
+				/*Cek Row */
     			for (int i = 0; i < 7; i++){
     				if((papan.kotak[i][3] != ' ') && ((papan.kotak[i][6] == papan.kotak[i][5]) && (papan.kotak[i][5] == papan.kotak[i][3]) || (papan.kotak[i][5] == papan.kotak[i][1]) && (papan.kotak[i][1] == papan.kotak[i][3]) || (papan.kotak[i][0] == papan.kotak[i][1]) && (papan.kotak[i][1] == papan.kotak[i][3])) && (papan.kotak[i][2] == papan.kotak[i][3]) && (papan.kotak[i][3] == papan.kotak[i][4]) && (papan.kotak[i][4] == papan.kotak[i][2])){
     					return papan.kotak[i][3];break;
@@ -900,14 +990,14 @@ void tukar_posisi_pemain(Pemain *pemain1, Pemain *pemain2){
 void *timer_pemain1(){
 	for(Timer.second = 10;Timer.second >= 0;Timer.second--){
 		sleep(1);
-		gotoxy(51,19);printf("00:%.2d",Timer.second);
+		gotoxy(51,18);printf("00:%.2d",Timer.second);
 		//Timer.second--;
-		if (permainan.cursor == true){
+		if (permainan.cursor){
 			gotoxy(91,21);
 		} else {
 			gotoxy(91,23);
 		}
-		if(permainan.stoptimer == true){
+		if(permainan.stoptimer1){
 			break;
 		}
 	}
@@ -916,14 +1006,14 @@ void *timer_pemain1(){
 void *timer_pemain2(){
 	for(Timer.second = 10;Timer.second >= 0;Timer.second--){
 		sleep(1);
-		gotoxy(51,19);printf("00:%.2d",Timer.second);
+		gotoxy(51,18);printf("00:%.2d",Timer.second);
 		//Timer.second--;
-		if (permainan.cursor == true){
+		if (permainan.cursor){
 			gotoxy(91,21);
 		} else {
 			gotoxy(91,23);
 		}
-		if(permainan.stoptimer == true){
+		if(permainan.stoptimer2){
 			break;
 		}
 	}
